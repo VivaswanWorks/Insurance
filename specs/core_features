@@ -1,0 +1,17 @@
+
+
+Core Functions of Insurance ERP:
+
+Insurance Provider: All information about insurance providers as per Insurance_Provider_Fields.txt file
+
+Insurance Schemes: All information about various insurance schemes as per Insurance_Scheme_Fields.txt file
+
+Policy Management: Track multiple policy types, coverage levels, and renewal dates in one centralized system
+
+Compliance Tracking: Automate documentation and maintain regulatory compliance with built-in industry-specific tools
+
+Claims Management: Streamline the entire claims process from submission to resolution
+
+Client Lifecycle Management: Monitor customer journeys from prospect to policyholder to renewal
+
+Automated Communications: Send timely reminders for renewals, follow-ups, and important policy milestones
