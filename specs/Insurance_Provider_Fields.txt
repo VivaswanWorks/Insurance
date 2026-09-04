@@ -1,0 +1,56 @@
+# Insurance Management App: Database Fields
+
+This document provides a comprehensive list of data fields required for an insurance management application, divided into **Insurance Provider Fields** and **Insurance Scheme Fields**.
+
+\---
+
+## 🏢 Insurance Provider Fields
+
+These fields capture the corporate, regulatory, financial, and operational details of the insurance company.
+
+### 1\. Basic Information
+
+* **Provider ID**: Unique alphanumeric identifier (Primary Key).
+* **Legal Name**: Official registered company name.
+* **Brand Name**: Public-facing marketing or trade name.
+* **Company Logo**: Image URL or file path for UI rendering.
+* **Provider Type**: Category of organization (e.g., Public, Private, Mutual, Co-operative).
+* **Description**: Brief overview of the provider's history or specialization.
+
+### 2\. Contact \& Communication
+
+* **Headquarters Address**: Full physical street address of the main corporate office.
+* **Mailing Address**: Address for billing, official letters, or correspondence.
+* **General Email**: Central corporate email address.
+* **Support Email**: Dedicated customer service or grievance email.
+* **Phone Number**: Primary corporate telephone line.
+* **Toll-Free Number**: Customer support hotline for policyholders.
+* **Website URL**: Official company website link.
+
+### 3\. Regulatory \& Legal Compliance
+
+* **License Number**: Government or authority-issued operating license identifier.
+* **Tax ID / EIN**: Corporate tax identification or Employer Identification Number.
+* **Regulatory Body**: Name of the supervising authority (e.g., NAIC, IRDAI, FCA).
+* **Status**: Current operational standing (Active, Suspended, Inactive, Under Review).
+* **Incorporation Date**: Official date the corporate entity was legally formed.
+
+### 4\. Operations \& Partnership Management
+
+* **Account Manager Name**: Assigned internal contact person managing the business relationship.
+* **Account Manager Email**: Direct email address of the account manager.
+* **Account Manager Phone**: Direct phone extension or mobile number of the account manager.
+* **Contract Start Date**: Commencement date of the partnership with the provider.
+* **Contract End Date**: Expiration or renewal date of the partnership agreement.
+* **Commission Rate**: Agreed payout percentage or flat fee structure for the app platform.
+
+### 5\. Financial Standing \& Ratings
+
+* **Credit Rating**: Financial strength score from major agencies (e.g., AM Best, S\&P, Moody's).
+* **Solvency Ratio**: Metric evaluating the provider's capability to meet long-term obligations.
+* **Claim Settlement Ratio**: Historically recorded percentage of total claims approved and paid out.
+
+\---
+
+## 
+

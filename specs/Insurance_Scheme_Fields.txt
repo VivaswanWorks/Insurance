@@ -1,0 +1,41 @@
+📋 Insurance Scheme Fields
+These fields define the architectural details, financial constraints, and rules of specific insurance products (schemes) offered by a provider.
+1. Scheme Overview
+Scheme ID: Unique product identifier (Primary Key).
+Provider ID: Foreign key linking the scheme back to its parent Insurance Provider.
+Scheme Name: Commercial or marketing name of the specific insurance product.
+Line of Business: High-level sector category (e.g., Health, Auto, Life, Property, Travel).
+Policy Type: Specific sub-category type (e.g., Term Life, Comprehensive Auto, Indemnity Health).
+Launch Date: Date the scheme officially becomes open for enrollment.
+Expiry Date: Date the scheme closes to new applicants or transitions to grandfathered status.
+2. Eligibility & Risk Rules
+Minimum Age: Lowest acceptable age for a primary applicant at entry.
+Maximum Age: Highest acceptable age for a primary applicant at entry.
+Renewable Age Limit: Maximum age up to which an existing policyholder can renew coverage.
+Target Audience: Intended consumer demographic (e.g., Senior Citizens, Corporate Employees, Families).
+Geographic Restrictions: Specific states, provinces, countries, or regions where coverage is valid or restricted.
+Medical Screening Required: Boolean flag indicating if a pre-policy medical checkup is mandatory (Yes/No).
+3. Financials & Premium Metrics
+Minimum Sum Assured: Lowest available coverage or death benefit amount.
+Maximum Sum Assured: Upper cap on the coverage or death benefit amount.
+Premium Frequency Options: Supported payment intervals array (e.g., Monthly, Quarterly, Semi-Annually, Annually).
+Base Premium Rate Link: Reference ID to the actuarial pricing table or API calculator matrix.
+Tax / GST Rate: Applicable statutory tax percentage applied to the premium.
+Discounts Matrix: Available discount identifiers (e.g., No Claim Bonus, Multi-policy discount, Online purchase discount).
+4. Coverage, Inclusions & Exclusions
+Inclusions: Comprehensive structured list or markdown text of medical conditions, hazards, or assets covered.
+Exclusions: Explicit list of conditions, events, or scenarios not covered by the policy.
+Waiting Period Days: Number of days before specific coverages (e.g., pre-existing diseases, maternity) become active.
+Co-Payment Percentage: The percentage of the claim amount the policyholder must pay out of pocket.
+Deductible Amount: Fixed monetary amount the policyholder must pay before insurance coverage begins.
+Available Riders / Add-ons: List of optional supplementary coverages that can be appended for an extra premium.
+5. Policy Lifecycle & Terms
+Minimum Policy Term: Shortest duration allowed for the contract (e.g., 1 year, 5 years).
+Maximum Policy Term: Longest duration allowed for the contract (e.g., 30 years, Whole Life).
+Grace Period Days: Number of days allowed for late premium payments before the policy lapses.
+Free Look Period Days: Mandatory window during which the policyholder can cancel for a full premium refund.
+6. Claims Management & Documentation
+Claim Process Type: Settlement method supported (e.g., Cashless, Reimbursement, Hybrid).
+TPA Details: Name and contact information of the Third-Party Administrator handling claims, if outsourced.
+Required KYC/Onboarding Documents: List of documents needed for buying the policy (e.g., ID Proof, Income Proof, Vehicle RC).
+Product Brochure URL: Direct link to the official product summary brochure or prospectus PDF.
