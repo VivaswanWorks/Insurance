@@ -25,7 +25,37 @@
   "settlement_date",
   "description",
   "documents",
-  "remarks"
+  "remarks",
+  "reported_date",
+  "intimation_mode",
+  "settled_amount",
+  "deductible",
+  "co_pay",
+  "currency",
+  "section_hospital",
+  "hospital",
+  "admission_date",
+  "discharge_date",
+  "diagnosis",
+  "treatment_details",
+  "section_docs",
+  "claim_documents",
+  "section_assessment",
+  "assessor",
+  "assessment_date",
+  "assessment_notes",
+  "decision",
+  "rejection_reason",
+  "approval_authority",
+  "section_settlement",
+  "settlement_mode",
+  "payment_entry",
+  "settlement_reference",
+  "recovery_amount",
+  "reinsurance_recovery",
+  "helpdesk_ticket",
+  "section_checklist",
+  "compliance_checklist"
  ],
  "fields": [
   {
@@ -82,7 +112,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "options": "Hospitalization\nAccident\nDeath\nProperty Damage\nTheft\nTravel Delay\nOther",
+   "options": "Cashless\nReimbursement\nThird Party\nHospitalization\nAccident\nDeath\nDisability\nProperty Damage\nTheft\nTravel Delay\nOther",
    "width": 130
   },
   {
@@ -122,7 +152,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "default": "Draft",
-   "options": "Draft\nSubmitted\nUnder Review\nDocuments Pending\nApproved\nPartially Approved\nRejected\nSettled",
+   "options": "Draft\nSubmitted\nUnder Review\nDocuments Pending\nAdditional Info Required\nApproved\nPartially Approved\nRejected\nSettled\nClosed",
    "width": 130
   },
   {
@@ -154,12 +184,182 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "reported_date",
+   "fieldtype": "Date",
+   "label": "Date Reported"
+  },
+  {
+   "fieldname": "intimation_mode",
+   "fieldtype": "Select",
+   "label": "Intimation Mode",
+   "options": "Portal\nEmail\nPhone\nBranch\nTPA\nOther"
+  },
+  {
+   "fieldname": "settled_amount",
+   "fieldtype": "Currency",
+   "label": "Settled Amount"
+  },
+  {
+   "fieldname": "deductible",
+   "fieldtype": "Currency",
+   "label": "Deductible / Excess"
+  },
+  {
+   "fieldname": "co_pay",
+   "fieldtype": "Currency",
+   "label": "Co-pay Amount"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "section_hospital",
+   "fieldtype": "Section Break",
+   "label": "Hospital / Service Provider"
+  },
+  {
+   "fieldname": "hospital",
+   "fieldtype": "Link",
+   "label": "Hospital / Provider",
+   "options": "Network Hospital"
+  },
+  {
+   "fieldname": "admission_date",
+   "fieldtype": "Date",
+   "label": "Admission Date"
+  },
+  {
+   "fieldname": "discharge_date",
+   "fieldtype": "Date",
+   "label": "Discharge Date"
+  },
+  {
+   "fieldname": "diagnosis",
+   "fieldtype": "Small Text",
+   "label": "Diagnosis / ICD Code"
+  },
+  {
+   "fieldname": "treatment_details",
+   "fieldtype": "Text Editor",
+   "label": "Treatment Details"
+  },
+  {
+   "fieldname": "section_docs",
+   "fieldtype": "Section Break",
+   "label": "Documents"
+  },
+  {
+   "fieldname": "claim_documents",
+   "fieldtype": "Table",
+   "label": "Claim Documents",
+   "options": "Claim Document"
+  },
+  {
+   "fieldname": "section_assessment",
+   "fieldtype": "Section Break",
+   "label": "Assessment & Decision"
+  },
+  {
+   "fieldname": "assessor",
+   "fieldtype": "Link",
+   "label": "Assessor / Surveyor",
+   "options": "User"
+  },
+  {
+   "fieldname": "assessment_date",
+   "fieldtype": "Date",
+   "label": "Assessment Date"
+  },
+  {
+   "fieldname": "assessment_notes",
+   "fieldtype": "Text Editor",
+   "label": "Assessment Notes"
+  },
+  {
+   "fieldname": "decision",
+   "fieldtype": "Select",
+   "label": "Decision",
+   "options": "\nApprove\nPartial Approve\nReject\nInvestigate"
+  },
+  {
+   "fieldname": "rejection_reason",
+   "fieldtype": "Small Text",
+   "label": "Rejection Reason"
+  },
+  {
+   "fieldname": "approval_authority",
+   "fieldtype": "Link",
+   "label": "Approval Authority",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_settlement",
+   "fieldtype": "Section Break",
+   "label": "Settlement"
+  },
+  {
+   "fieldname": "settlement_mode",
+   "fieldtype": "Select",
+   "label": "Settlement Mode",
+   "options": "Bank Transfer\nCheque\nCash\nAdjustment"
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Data",
+   "label": "Payment Entry"
+  },
+  {
+   "fieldname": "settlement_reference",
+   "fieldtype": "Data",
+   "label": "Settlement Reference / UTR"
+  },
+  {
+   "fieldname": "recovery_amount",
+   "fieldtype": "Currency",
+   "label": "Recovery / Salvage"
+  },
+  {
+   "fieldname": "reinsurance_recovery",
+   "fieldtype": "Currency",
+   "label": "Reinsurance Recovery"
+  },
+  {
+   "fieldname": "helpdesk_ticket",
+   "fieldtype": "Data",
+   "label": "Helpdesk Ticket"
+  },
+  {
+   "fieldname": "section_checklist",
+   "fieldtype": "Section Break",
+   "label": "Compliance Checklist"
+  },
+  {
+   "fieldname": "compliance_checklist",
+   "fieldtype": "Table",
+   "label": "Checklist",
+   "options": "Compliance Checklist Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
- "links": [],
- "modified": "2026-09-04 06:00:00",
+ "links": [
+  {
+   "link_doctype": "Claim Assessment Log",
+   "link_fieldname": "claim",
+   "group": "Assessment"
+  },
+  {
+   "link_doctype": "Claim Recovery",
+   "link_fieldname": "claim",
+   "group": "Recovery"
+  }
+ ],
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance Claim",

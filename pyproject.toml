@@ -1,0 +1,64 @@
+[project]
+name = "insurance"
+authors = [
+    { name = "Aegis", email = "hello@aegis.local" }
+]
+description = "Insurance ERP on Frappe — providers, schemes, policies, claims, compliance"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { file = "license.txt" }
+dynamic = ["version"]
+dependencies = []
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "insurance"
+
+[tool.bench.dev-dependencies]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "I",
+    "UP",
+    "B",
+    "RUF",
+]
+ignore = [
+    "B017",
+    "B018",
+    "B023",
+    "B904",
+    "E101",
+    "E402",
+    "E501",
+    "E741",
+    "F401",
+    "F403",
+    "F405",
+    "F541",
+    "UP030",
+    "UP031",
+    "UP032",
+    "UP038",
+    "RUF001",
+    "RUF012",
+    "B007",
+    "UP012",
+    "UP035",
+]
+typing-modules = ["frappe.types.DF"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+docstring-code-format = true

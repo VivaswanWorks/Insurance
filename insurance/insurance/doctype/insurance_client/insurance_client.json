@@ -23,7 +23,15 @@
   "helpdesk_ticket",
   "agent",
   "kyc_status",
-  "notes"
+  "notes",
+  "risk_category",
+  "high_value",
+  "email_opt_in",
+  "sms_opt_in",
+  "whatsapp_opt_in",
+  "consent_data_processing",
+  "consent_marketing",
+  "consent_share_tpa"
  ],
  "fields": [
   {
@@ -90,7 +98,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "default": "Prospect",
-   "options": "Prospect\nQualified\nQuoted\nPolicyholder\nRenewal Due\nLapsed\nAdvocate",
+   "options": "Prospect\nQualified\nQuoted\nPolicyholder\nActive\nAt Risk\nRenewal Due\nLapsed\nWin-back\nAdvocate\nBlacklisted",
    "width": 140
   },
   {
@@ -135,12 +143,88 @@
    "fieldname": "notes",
    "fieldtype": "Text Editor",
    "label": "Notes"
+  },
+  {
+   "fieldname": "risk_category",
+   "fieldtype": "Select",
+   "label": "Risk Category",
+   "options": "Low\nMedium\nHigh",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "high_value",
+   "fieldtype": "Check",
+   "label": "High Value Client"
+  },
+  {
+   "fieldname": "email_opt_in",
+   "fieldtype": "Check",
+   "label": "Email Opt-in",
+   "default": 1
+  },
+  {
+   "fieldname": "sms_opt_in",
+   "fieldtype": "Check",
+   "label": "SMS Opt-in",
+   "default": 1
+  },
+  {
+   "fieldname": "whatsapp_opt_in",
+   "fieldtype": "Check",
+   "label": "WhatsApp Opt-in"
+  },
+  {
+   "fieldname": "consent_data_processing",
+   "fieldtype": "Check",
+   "label": "Consent: Data Processing",
+   "default": 1
+  },
+  {
+   "fieldname": "consent_marketing",
+   "fieldtype": "Check",
+   "label": "Consent: Marketing"
+  },
+  {
+   "fieldname": "consent_share_tpa",
+   "fieldtype": "Check",
+   "label": "Consent: Share with TPA / Reinsurer"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
- "links": [],
- "modified": "2026-09-04 06:00:00",
+ "links": [
+  {
+   "link_doctype": "Insurance Policy",
+   "link_fieldname": "client",
+   "group": "Policies"
+  },
+  {
+   "link_doctype": "Insurance Claim",
+   "link_fieldname": "client",
+   "group": "Claims"
+  },
+  {
+   "link_doctype": "Insurance Quotation",
+   "link_fieldname": "client",
+   "group": "Quotes"
+  },
+  {
+   "link_doctype": "Insurance Opportunity",
+   "link_fieldname": "client",
+   "group": "Opportunities"
+  },
+  {
+   "link_doctype": "Client KYC",
+   "link_fieldname": "client",
+   "group": "KYC"
+  },
+  {
+   "link_doctype": "Insurance Grievance",
+   "link_fieldname": "client",
+   "group": "Grievances"
+  }
+ ],
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance Client",

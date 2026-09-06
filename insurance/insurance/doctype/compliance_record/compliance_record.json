@@ -18,7 +18,10 @@
   "due_date",
   "owner_user",
   "documents",
-  "notes"
+  "notes",
+  "checklist",
+  "attachment",
+  "closed_on"
  ],
  "fields": [
   {
@@ -101,12 +104,28 @@
    "fieldname": "notes",
    "fieldtype": "Text Editor",
    "label": "Notes"
+  },
+  {
+   "fieldname": "checklist",
+   "fieldtype": "Table",
+   "label": "Checklist",
+   "options": "Compliance Checklist Item"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "closed_on",
+   "fieldtype": "Date",
+   "label": "Closed On"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
  "links": [],
- "modified": "2026-09-04 06:00:00",
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Compliance Record",

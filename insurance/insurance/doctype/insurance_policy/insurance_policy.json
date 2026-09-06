@@ -26,7 +26,28 @@
   "commission_rate",
   "commission_amount",
   "riders",
-  "notes"
+  "notes",
+  "issue_date",
+  "proposal_number",
+  "previous_policy",
+  "quotation",
+  "tax_amount",
+  "total_premium",
+  "next_premium_due",
+  "payment_status",
+  "section_members",
+  "policy_members",
+  "section_coverages",
+  "policy_coverages",
+  "section_docs",
+  "policy_document",
+  "proposal_form",
+  "other_documents",
+  "section_reinsurance",
+  "reinsurance_type",
+  "cession_percentage",
+  "section_checklist",
+  "compliance_checklist"
  ],
  "fields": [
   {
@@ -78,7 +99,7 @@
    "label": "Policy Type",
    "in_standard_filter": 1,
    "default": "New Business",
-   "options": "New Business\nRenewal\nEndorsement\nPorted"
+   "options": "New Business\nNew\nRenewal\nEndorsement\nMigration\nPorted"
   },
   {
    "fieldname": "coverage_level",
@@ -142,7 +163,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "default": "Draft",
-   "options": "Draft\nActive\nGrace Period\nLapsed\nCancelled\nExpired",
+   "options": "Draft\nActive\nGrace Period\nLapsed\nCancelled\nExpired\nClaimed\nSettled",
    "width": 110
   },
   {
@@ -169,12 +190,149 @@
    "fieldname": "notes",
    "fieldtype": "Text Editor",
    "label": "Notes"
+  },
+  {
+   "fieldname": "issue_date",
+   "fieldtype": "Date",
+   "label": "Issue Date"
+  },
+  {
+   "fieldname": "proposal_number",
+   "fieldtype": "Data",
+   "label": "Proposal / Quote No."
+  },
+  {
+   "fieldname": "previous_policy",
+   "fieldtype": "Link",
+   "label": "Previous Policy",
+   "options": "Insurance Policy"
+  },
+  {
+   "fieldname": "quotation",
+   "fieldtype": "Link",
+   "label": "Quotation",
+   "options": "Insurance Quotation"
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "label": "Tax / GST"
+  },
+  {
+   "fieldname": "total_premium",
+   "fieldtype": "Currency",
+   "label": "Total Premium",
+   "read_only": 1
+  },
+  {
+   "fieldname": "next_premium_due",
+   "fieldtype": "Date",
+   "label": "Next Premium Due Date"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Unpaid\nPartially Paid\nPaid\nOverdue",
+   "default": "Unpaid",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "section_members",
+   "fieldtype": "Section Break",
+   "label": "Members / Beneficiaries"
+  },
+  {
+   "fieldname": "policy_members",
+   "fieldtype": "Table",
+   "label": "Members",
+   "options": "Policy Member"
+  },
+  {
+   "fieldname": "section_coverages",
+   "fieldtype": "Section Break",
+   "label": "Coverage Snapshot"
+  },
+  {
+   "fieldname": "policy_coverages",
+   "fieldtype": "Table",
+   "label": "Coverages",
+   "options": "Policy Coverage"
+  },
+  {
+   "fieldname": "section_docs",
+   "fieldtype": "Section Break",
+   "label": "Documents"
+  },
+  {
+   "fieldname": "policy_document",
+   "fieldtype": "Attach",
+   "label": "Policy Document (PDF)"
+  },
+  {
+   "fieldname": "proposal_form",
+   "fieldtype": "Attach",
+   "label": "Proposal Form"
+  },
+  {
+   "fieldname": "other_documents",
+   "fieldtype": "Table",
+   "label": "Other Documents",
+   "options": "Policy Document Item"
+  },
+  {
+   "fieldname": "section_reinsurance",
+   "fieldtype": "Section Break",
+   "label": "Reinsurance"
+  },
+  {
+   "fieldname": "reinsurance_type",
+   "fieldtype": "Select",
+   "label": "Reinsurance Type",
+   "options": "\nFacultative\nTreaty"
+  },
+  {
+   "fieldname": "cession_percentage",
+   "fieldtype": "Percent",
+   "label": "Cession %"
+  },
+  {
+   "fieldname": "section_checklist",
+   "fieldtype": "Section Break",
+   "label": "Compliance Checklist"
+  },
+  {
+   "fieldname": "compliance_checklist",
+   "fieldtype": "Table",
+   "label": "Checklist",
+   "options": "Compliance Checklist Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
- "links": [],
- "modified": "2026-09-04 06:00:00",
+ "links": [
+  {
+   "link_doctype": "Insurance Claim",
+   "link_fieldname": "policy",
+   "group": "Claims"
+  },
+  {
+   "link_doctype": "Policy Endorsement",
+   "link_fieldname": "policy",
+   "group": "Endorsements"
+  },
+  {
+   "link_doctype": "Commission Payout",
+   "link_fieldname": "policy",
+   "group": "Commission"
+  },
+  {
+   "link_doctype": "Insurance Communication",
+   "link_fieldname": "related_name",
+   "group": "Communications"
+  }
+ ],
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance Policy",

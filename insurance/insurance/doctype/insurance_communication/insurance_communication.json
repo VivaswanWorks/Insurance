@@ -19,7 +19,8 @@
   "scheduled_at",
   "status",
   "agent",
-  "body"
+  "body",
+  "client"
  ],
  "fields": [
   {
@@ -49,7 +50,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "default": "Email",
-   "options": "Email\nSMS\nIn-App",
+   "options": "Email\nSMS\nWhatsApp\nIn-App\nPush",
    "width": 100
   },
   {
@@ -60,7 +61,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "in_global_search": 1,
-   "options": "Renewal Reminder\nPremium Due\nClaim Update\nKYC Follow-up\nWelcome\nPolicy Milestone",
+   "options": "Renewal Reminder\nPremium Due\nPremium Overdue\nClaim Update\nKYC Follow-up\nWelcome\nPolicy Milestone\nPolicy Issued\nPolicy Expiring\nPolicy Renewed\nPolicy Lapsed\nClaim Submitted\nClaim Info Required\nClaim Approved\nClaim Rejected\nClaim Settled\nGrievance Acknowledgement",
    "width": 160
   },
   {
@@ -108,12 +109,18 @@
    "fieldname": "body",
    "fieldtype": "Text Editor",
    "label": "Message Body"
+  },
+  {
+   "fieldname": "client",
+   "fieldtype": "Link",
+   "label": "Client",
+   "options": "Insurance Client"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
  "links": [],
- "modified": "2026-09-04 06:00:00",
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance Communication",

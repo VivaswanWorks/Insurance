@@ -19,14 +19,31 @@
    "label": "Insurance Provider",
    "type": "Link",
    "link_type": "DocType",
-   "link_to": "Insurance Provider",
-   "onboarding": 0
+   "link_to": "Insurance Provider"
   },
   {
    "label": "Insurance Scheme",
    "type": "Link",
    "link_type": "DocType",
    "link_to": "Insurance Scheme"
+  },
+  {
+   "label": "Insurance Agent",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Agent"
+  },
+  {
+   "label": "Network Hospital",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Network Hospital"
+  },
+  {
+   "label": "Commission Rule",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Commission Rule"
   },
   {
    "label": "Transactions",
@@ -51,6 +68,24 @@
    "link_to": "Insurance Client"
   },
   {
+   "label": "Insurance Quotation",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Quotation"
+  },
+  {
+   "label": "Insurance Opportunity",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Opportunity"
+  },
+  {
+   "label": "Policy Endorsement",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Policy Endorsement"
+  },
+  {
    "label": "Operations",
    "type": "Card Break"
   },
@@ -61,10 +96,68 @@
    "link_to": "Compliance Record"
   },
   {
+   "label": "Compliance Document",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Compliance Document"
+  },
+  {
+   "label": "Compliance Checklist Template",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Compliance Checklist Template"
+  },
+  {
+   "label": "Compliance Report",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Compliance Report"
+  },
+  {
+   "label": "Client KYC",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Client KYC"
+  },
+  {
+   "label": "Insurance Grievance",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Grievance"
+  },
+  {
    "label": "Insurance Communication",
    "type": "Link",
    "link_type": "DocType",
    "link_to": "Insurance Communication"
+  },
+  {
+   "label": "Commission Payout",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Commission Payout"
+  },
+  {
+   "label": "Claim Recovery",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Claim Recovery"
+  },
+  {
+   "label": "Premium Calculation Log",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Premium Calculation Log"
+  },
+  {
+   "label": "Settings",
+   "type": "Card Break"
+  },
+  {
+   "label": "Insurance Settings",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Settings"
   },
   {
    "label": "Reports",
@@ -92,7 +185,7 @@
    "is_query_report": 1
   }
  ],
- "modified": "2026-09-04 06:00:00",
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance",
@@ -126,6 +219,12 @@
    "type": "DocType",
    "link_to": "Insurance Claim",
    "color": "Orange"
+  },
+  {
+   "label": "Insurance Quotation",
+   "type": "DocType",
+   "link_to": "Insurance Quotation",
+   "color": "Green"
   },
   {
    "label": "Agent Commission",

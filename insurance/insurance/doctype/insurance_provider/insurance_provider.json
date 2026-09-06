@@ -41,7 +41,28 @@
   "section_financial",
   "credit_rating",
   "solvency_ratio",
-  "claim_settlement_ratio"
+  "claim_settlement_ratio",
+  "provider_code",
+  "is_group",
+  "parent_provider",
+  "registration_number",
+  "license_valid_upto",
+  "gstin",
+  "pan",
+  "cin",
+  "section_settlement",
+  "default_currency",
+  "payment_terms",
+  "bank_account",
+  "settlement_cycle",
+  "commission_payable",
+  "claims_payable",
+  "premium_receivable",
+  "section_agreement",
+  "agreement_start",
+  "agreement_end",
+  "documents",
+  "remarks"
  ],
  "fields": [
   {
@@ -83,7 +104,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "options": "Public\nPrivate\nMutual\nCo-operative",
+   "options": "Public\nPrivate\nMutual\nCo-operative\nOwn Company\nPartner Insurer\nReinsurer\nTPA\nBroker\nAggregator",
    "width": 120
   },
   {
@@ -244,12 +265,134 @@
    "label": "Claim Settlement Ratio (%)",
    "in_list_view": 1,
    "width": 90
+  },
+  {
+   "fieldname": "provider_code",
+   "fieldtype": "Data",
+   "label": "Provider Code",
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "parent_provider",
+   "fieldtype": "Link",
+   "label": "Parent Provider",
+   "options": "Insurance Provider"
+  },
+  {
+   "fieldname": "registration_number",
+   "fieldtype": "Data",
+   "label": "IRDAI / Regulator Registration No."
+  },
+  {
+   "fieldname": "license_valid_upto",
+   "fieldtype": "Date",
+   "label": "License Valid Upto"
+  },
+  {
+   "fieldname": "gstin",
+   "fieldtype": "Data",
+   "label": "GSTIN"
+  },
+  {
+   "fieldname": "pan",
+   "fieldtype": "Data",
+   "label": "PAN"
+  },
+  {
+   "fieldname": "cin",
+   "fieldtype": "Data",
+   "label": "CIN"
+  },
+  {
+   "fieldname": "section_settlement",
+   "fieldtype": "Section Break",
+   "label": "Financial & Settlement"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "label": "Default Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "payment_terms",
+   "fieldtype": "Data",
+   "label": "Payment Terms"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Data",
+   "label": "Bank Account"
+  },
+  {
+   "fieldname": "settlement_cycle",
+   "fieldtype": "Select",
+   "label": "Settlement Cycle",
+   "options": "Daily\nWeekly\nMonthly\nQuarterly"
+  },
+  {
+   "fieldname": "commission_payable",
+   "fieldtype": "Data",
+   "label": "Commission Payable Account"
+  },
+  {
+   "fieldname": "claims_payable",
+   "fieldtype": "Data",
+   "label": "Claims Payable Account"
+  },
+  {
+   "fieldname": "premium_receivable",
+   "fieldtype": "Data",
+   "label": "Premium Receivable Account"
+  },
+  {
+   "fieldname": "section_agreement",
+   "fieldtype": "Section Break",
+   "label": "Agreement & Documents"
+  },
+  {
+   "fieldname": "agreement_start",
+   "fieldtype": "Date",
+   "label": "Agreement Start Date"
+  },
+  {
+   "fieldname": "agreement_end",
+   "fieldtype": "Date",
+   "label": "Agreement End Date"
+  },
+  {
+   "fieldname": "documents",
+   "fieldtype": "Table",
+   "label": "Documents",
+   "options": "Insurance Provider Document"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text Editor",
+   "label": "Remarks"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 0,
- "links": [],
- "modified": "2026-09-04 06:00:00",
+ "links": [
+  {
+   "link_doctype": "Insurance Scheme",
+   "link_fieldname": "provider",
+   "group": "Schemes"
+  },
+  {
+   "link_doctype": "Insurance Policy",
+   "link_fieldname": "provider",
+   "group": "Policies"
+  }
+ ],
+ "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",
  "name": "Insurance Provider",

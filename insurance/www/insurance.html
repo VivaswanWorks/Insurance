@@ -1,12 +1,17 @@
-{% extends "templates/web.html" %}
-{% block title %}{{ _("Insurance") }}{% endblock %}
-
-{% block page_content %}
-<div id="app"></div>
-<div id="modals"></div>
-<div id="popovers"></div>
-<script>
-	window.csrf_token = '{{ csrf_token }}';
-</script>
-<script type="module" src="/assets/insurance/frontend/index.js"></script>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" href="/assets/insurance/frontend/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{{ _("Insurance") }}</title>
+		<link rel="stylesheet" href="/assets/insurance/frontend/index.css" />
+		<script>window.csrf_token = '{{ csrf_token }}';</script>
+	</head>
+	<body>
+		<div id="app"></div>
+		<div id="modals"></div>
+		<div id="popovers"></div>
+		<script type="module" src="/assets/insurance/frontend/index.js"></script>
+	</body>
+</html>

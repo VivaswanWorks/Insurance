@@ -65,30 +65,25 @@
 
 ## App Structure
 ```
-insurance/
-├── insurance/
-│   ├── doctype/
-│   │   ├── insurance_provider/
-│   │   ├── insurance_scheme/
-│   │   ├── insurance_policy/
-│   │   ├── policy_endorsement/
-│   │   ├── insurance_claim/
-│   │   ├── insurance_opportunity/
-│   │   ├── compliance_document/
-│   │   └── ...
-│   ├── api/
-│   ├── integrations/
-│   │   ├── erpnext.py
-│   │   ├── hrms.py
-│   │   ├── crm.py
-│   │   ├── helpdesk.py
-│   │   └── healthcare.py
-│   ├── public/
-│   ├── templates/
+insurance/                          # Frappe app / git root
+├── pyproject.toml
+├── license.txt
+├── README.md
+├── frontend/                       # Vue 3 + Vite + Tailwind + frappe-ui
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── src/
+├── insurance/                      # Python package
 │   ├── hooks.py
-│   └── ...
-├── docs/                
-└── README.md
+│   ├── modules.txt
+│   ├── api.py
+│   ├── public/
+│   │   ├── images/insurance.svg
+│   │   └── frontend/               # Vite build output
+│   ├── www/insurance.html          # SPA shell at /insurance
+│   └── insurance/doctype/
+└── specs/
 ```
 
 ## Development Guidelines for Coding Agents
@@ -123,6 +118,27 @@ Create **Insurance Settings** (Single) with:
 
 
 ## Installation
+
+This repository is a Frappe app. Place it under `frappe-bench/apps/insurance`, then:
+
+```bash
+# Install the app on a site
+bench --site <site> install-app insurance
+
+# Build the Vue SPA (from the app root)
+cd frontend
+yarn
+yarn build
+```
+
+Dev server (proxies Frappe via `sites/common_site_config.json`):
+
+```bash
+cd frontend
+yarn dev
+```
+
+SPA route: `/insurance`. Built assets: `/assets/insurance/frontend/`.
 
 
 

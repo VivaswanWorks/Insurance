@@ -26,13 +26,10 @@ fixtures = [
 		"Compliance Officer",
 		"Insurance User",
 	]]]},
-	{"dt": "Role Profile", "filters": [["name", "in", ["Insurance Desk"]]]},
-	{"dt": "Custom Field", "filters": [["module", "=", "Insurance"]]},
 ]
 
 website_route_rules = [
 	{"from_route": "/insurance/<path:app_path>", "to_route": "insurance"},
-	{"from_route": "/frontend/<path:app_path>", "to_route": "insurance"},
 ]
 
 app_include_js = []
@@ -44,6 +41,8 @@ after_migrate = "insurance.install.after_migrate"
 scheduler_events = {
 	"daily": [
 		"insurance.tasks.send_renewal_reminders",
+		"insurance.tasks.send_premium_reminders",
+		"insurance.tasks.expire_policies",
 		"insurance.tasks.mark_overdue_compliance",
 		"insurance.tasks.lapse_grace_policies",
 	],
