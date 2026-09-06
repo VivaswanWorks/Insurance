@@ -1,8 +1,8 @@
 app_name = "insurance"
 app_title = "Insurance"
-app_publisher = "Aegis"
+app_publisher = "Vivaswan Works"
 app_description = "Insurance ERP on Frappe — providers, schemes, policies, claims, compliance"
-app_email = "hello@aegis.local"
+app_email = "hello@vivaswan.in"
 app_license = "mit"
 app_version = "0.0.1"
 
