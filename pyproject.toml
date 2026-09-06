@@ -1,7 +1,7 @@
 [project]
 name = "insurance"
 authors = [
-    { name = "Aegis", email = "hello@aegis.local" }
+    { name = "VivaswanWorks", email = "hello@Vivaswan.in" }
 ]
 description = "Insurance ERP on Frappe — providers, schemes, policies, claims, compliance"
 requires-python = ">=3.10"
