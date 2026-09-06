@@ -1,0 +1,12 @@
+{% extends "templates/web.html" %}
+{% block title %}{{ _("Insurance") }}{% endblock %}
+
+{% block page_content %}
+<div id="app"></div>
+<div id="modals"></div>
+<div id="popovers"></div>
+<script>
+	window.csrf_token = '{{ csrf_token }}';
+</script>
+<script type="module" src="/assets/insurance/frontend/index.js"></script>
+{% endblock %}

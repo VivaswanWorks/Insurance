@@ -1,0 +1,138 @@
+{
+ "charts": [],
+ "content": "[]",
+ "creation": "2026-09-04 06:00:00",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "shield",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Insurance",
+ "links": [
+  {
+   "label": "Masters",
+   "type": "Card Break"
+  },
+  {
+   "label": "Insurance Provider",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Provider",
+   "onboarding": 0
+  },
+  {
+   "label": "Insurance Scheme",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Scheme"
+  },
+  {
+   "label": "Transactions",
+   "type": "Card Break"
+  },
+  {
+   "label": "Insurance Policy",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Policy"
+  },
+  {
+   "label": "Insurance Claim",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Claim"
+  },
+  {
+   "label": "Insurance Client",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Client"
+  },
+  {
+   "label": "Operations",
+   "type": "Card Break"
+  },
+  {
+   "label": "Compliance Record",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Compliance Record"
+  },
+  {
+   "label": "Insurance Communication",
+   "type": "Link",
+   "link_type": "DocType",
+   "link_to": "Insurance Communication"
+  },
+  {
+   "label": "Reports",
+   "type": "Card Break"
+  },
+  {
+   "label": "Agent Commission",
+   "type": "Link",
+   "link_type": "Report",
+   "link_to": "Agent Commission",
+   "is_query_report": 1
+  },
+  {
+   "label": "Policy Claim",
+   "type": "Link",
+   "link_type": "Report",
+   "link_to": "Policy Claim",
+   "is_query_report": 1
+  },
+  {
+   "label": "Policy Sale",
+   "type": "Link",
+   "link_type": "Report",
+   "link_to": "Policy Sale",
+   "is_query_report": 1
+  }
+ ],
+ "modified": "2026-09-04 06:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance",
+ "name": "Insurance",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Insurance Manager"
+  },
+  {
+   "role": "Insurance Agent"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 1,
+ "shortcuts": [
+  {
+   "label": "Insurance Policy",
+   "type": "DocType",
+   "link_to": "Insurance Policy",
+   "color": "Blue",
+   "stats_filter": "{\"status\":[\"=\",\"Active\"]}",
+   "format": "{} Active"
+  },
+  {
+   "label": "Insurance Claim",
+   "type": "DocType",
+   "link_to": "Insurance Claim",
+   "color": "Orange"
+  },
+  {
+   "label": "Agent Commission",
+   "type": "Report",
+   "link_to": "Agent Commission",
+   "is_query_report": 1
+  }
+ ],
+ "title": "Insurance"
+}
