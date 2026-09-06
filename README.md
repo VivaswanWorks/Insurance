@@ -63,7 +63,7 @@
 - Progressive Web App friendly forms
 - Critical offline actions (claim intimation) if needed later
 
-## Suggested App Structure
+## App Structure
 ```
 insurance/
 ├── insurance/
