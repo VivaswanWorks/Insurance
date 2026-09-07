@@ -232,9 +232,9 @@ write(
   path.join(PKG, 'hooks.py'),
   `app_name = "insurance"
 app_title = "Insurance"
-app_publisher = "Aegis"
+app_publisher = "VivaswanWorks"
 app_description = "Insurance ERP on Frappe — providers, schemes, policies, claims, compliance"
-app_email = "hello@aegis.local"
+app_email = "hello@vivaswan.in"
 app_license = "mit"
 app_version = "0.0.1"
 
@@ -515,7 +515,7 @@ def get_data():
 	]
 `
 )
-write(path.join(PKG, 'config', 'docs.py'), 'source_link = "https://github.com/aegis/insurance"\n')
+write(path.join(PKG, 'config', 'docs.py'), 'source_link = "https://github.com/VivaswanWorks/insurance"\n')
 write(path.join(PKG, 'config', '__init__.py'), '')
 
 const reports = [
@@ -688,7 +688,7 @@ write(
   path.join(APP, 'pyproject.toml'),
   `[project]
 name = "insurance"
-authors = [{ name = "Aegis", email = "hello@aegis.local" }]
+authors = [{ name = "VivaswanWorks", email = "hello@vivaswan.in" }]
 description = "Insurance ERP"
 requires-python = ">=3.10"
 readme = "README.md"
