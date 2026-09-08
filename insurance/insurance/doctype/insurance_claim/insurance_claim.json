@@ -54,9 +54,17 @@
   "recovery_amount",
   "reinsurance_recovery",
   "helpdesk_ticket",
-  "section_checklist",
-  "compliance_checklist"
- ],
+   "section_eligibility",
+   "eligibility_score",
+   "eligibility_status",
+   "eligibility_can_submit",
+   "latest_eligibility_evaluation",
+   "claimant",
+   "eligibility_overridden",
+   "eligibility_override_reason",
+   "section_checklist",
+   "compliance_checklist"
+  ],
  "fields": [
   {
    "fieldname": "claim_number",
@@ -333,11 +341,63 @@
    "fieldtype": "Data",
    "label": "Helpdesk Ticket"
   },
-  {
-   "fieldname": "section_checklist",
-   "fieldtype": "Section Break",
-   "label": "Compliance Checklist"
-  },
+   {
+    "fieldname": "section_eligibility",
+    "fieldtype": "Section Break",
+    "label": "Eligibility"
+   },
+   {
+    "fieldname": "eligibility_score",
+    "fieldtype": "Percent",
+    "in_list_view": 1,
+    "label": "Claim Success Score (%)",
+    "read_only": 1
+   },
+   {
+    "fieldname": "eligibility_status",
+    "fieldtype": "Select",
+    "in_standard_filter": 1,
+    "label": "Eligibility Status",
+    "options": "\nEligible\nConditionally Eligible\nNot Eligible",
+    "read_only": 1
+   },
+   {
+    "default": "0",
+    "fieldname": "eligibility_can_submit",
+    "fieldtype": "Check",
+    "label": "Can Submit Claim",
+    "read_only": 1
+   },
+   {
+    "fieldname": "latest_eligibility_evaluation",
+    "fieldtype": "Link",
+    "label": "Latest Eligibility Evaluation",
+    "options": "Claim Eligibility Evaluation",
+    "read_only": 1
+   },
+   {
+    "fieldname": "claimant",
+    "fieldtype": "Data",
+    "label": "Claimant / Member Name"
+   },
+   {
+    "default": "0",
+    "fieldname": "eligibility_overridden",
+    "fieldtype": "Check",
+    "label": "Eligibility Overridden"
+   },
+   {
+    "depends_on": "eligibility_overridden",
+    "fieldname": "eligibility_override_reason",
+    "fieldtype": "Small Text",
+    "label": "Override Reason",
+    "mandatory_depends_on": "eligibility_overridden"
+   },
+   {
+    "fieldname": "section_checklist",
+    "fieldtype": "Section Break",
+    "label": "Compliance Checklist"
+   },
   {
    "fieldname": "compliance_checklist",
    "fieldtype": "Table",
@@ -353,12 +413,17 @@
    "link_fieldname": "claim",
    "group": "Assessment"
   },
-  {
-   "link_doctype": "Claim Recovery",
-   "link_fieldname": "claim",
-   "group": "Recovery"
-  }
- ],
+   {
+    "link_doctype": "Claim Recovery",
+    "link_fieldname": "claim",
+    "group": "Recovery"
+   },
+   {
+    "link_doctype": "Claim Eligibility Evaluation",
+    "link_fieldname": "insurance_claim",
+    "group": "Eligibility"
+   }
+  ],
  "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",

@@ -45,6 +45,7 @@ scheduler_events = {
 		"insurance.tasks.expire_policies",
 		"insurance.tasks.mark_overdue_compliance",
 		"insurance.tasks.lapse_grace_policies",
+		"insurance.tasks.rescore_open_claims",
 	],
 	"hourly": [
 		"insurance.tasks.flush_queued_communications",

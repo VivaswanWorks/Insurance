@@ -9,6 +9,7 @@ class InsuranceClaim(Document):
 		self.set_missing_values()
 		self.validate_amounts()
 		self.stamp_documents()
+		self.evaluate_eligibility()
 
 	def set_missing_values(self):
 		if self.policy:
@@ -71,6 +72,22 @@ class InsuranceClaim(Document):
 					title=_("Checklist Incomplete"),
 				)
 
+	def evaluate_eligibility(self):
+		if getattr(self.flags, "ignore_eligibility", False):
+			return
+		if not frappe.db.exists("DocType", "Client Eligibility Criteria"):
+			return
+		from insurance.eligibility import evaluate_claim_eligibility
+
+		should_throw = self.status not in (None, "Draft")
+		result = evaluate_claim_eligibility(self, throw=should_throw)
+		if self.meta.has_field("eligibility_score"):
+			self.eligibility_score = result.overall_score
+			self.eligibility_status = result.overall_status
+			self.eligibility_can_submit = 1 if result.can_submit else 0
+			if result.evaluation_name:
+				self.latest_eligibility_evaluation = result.evaluation_name
+
 	def on_update(self):
 		self.log_status_change()
 		self.sync_policy_status()
@@ -80,6 +97,25 @@ class InsuranceClaim(Document):
 
 	def after_insert(self):
 		self.apply_checklist_template()
+		self.persist_eligibility_log()
+
+	def persist_eligibility_log(self):
+		if getattr(self.flags, "ignore_eligibility", False):
+			return
+		if not frappe.db.exists("DocType", "Client Eligibility Criteria"):
+			return
+		from insurance.eligibility import evaluate_claim_eligibility
+
+		result = evaluate_claim_eligibility(self, throw=False)
+		updates = {}
+		if self.meta.has_field("eligibility_score"):
+			updates["eligibility_score"] = result.overall_score
+			updates["eligibility_status"] = result.overall_status
+			updates["eligibility_can_submit"] = 1 if result.can_submit else 0
+		if result.evaluation_name and self.meta.has_field("latest_eligibility_evaluation"):
+			updates["latest_eligibility_evaluation"] = result.evaluation_name
+		for field, value in updates.items():
+			self.db_set(field, value, update_modified=False)
 
 	def apply_checklist_template(self):
 		if self.get("compliance_checklist"):

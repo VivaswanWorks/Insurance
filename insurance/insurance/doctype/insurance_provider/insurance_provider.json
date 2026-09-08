@@ -386,12 +386,17 @@
    "link_fieldname": "provider",
    "group": "Schemes"
   },
-  {
-   "link_doctype": "Insurance Policy",
-   "link_fieldname": "provider",
-   "group": "Policies"
-  }
- ],
+   {
+    "link_doctype": "Insurance Policy",
+    "link_fieldname": "provider",
+    "group": "Policies"
+   },
+   {
+    "link_doctype": "Client Eligibility Criteria",
+    "link_fieldname": "insurance_provider",
+    "group": "Eligibility"
+   }
+  ],
  "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",

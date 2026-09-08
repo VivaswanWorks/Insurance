@@ -13,6 +13,7 @@ class InsurancePolicy(Document):
 		self.validate_scheme()
 		self.compute_totals()
 		self.compute_member_ages()
+		self.evaluate_issuance_eligibility()
 
 	def set_missing_values(self):
 		if self.scheme and not self.provider:
@@ -58,6 +59,17 @@ class InsurancePolicy(Document):
 		for row in self.get("policy_members") or []:
 			if row.date_of_birth:
 				row.age = int(date_diff(nowdate(), row.date_of_birth) / 365.25)
+
+	def evaluate_issuance_eligibility(self):
+		if getattr(self.flags, "ignore_eligibility", False):
+			return
+		if self.status not in ("Active", "Grace Period"):
+			return
+		if not frappe.db.exists("DocType", "Client Eligibility Criteria"):
+			return
+		from insurance.eligibility import evaluate_policy_eligibility
+
+		evaluate_policy_eligibility(self, throw=self.status == "Active" and (self.is_new() or self.has_value_changed("status")))
 
 	def on_update(self):
 		self.sync_client_stage()

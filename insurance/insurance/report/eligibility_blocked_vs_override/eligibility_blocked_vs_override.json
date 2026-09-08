@@ -1,0 +1,27 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2026-09-07 00:00:00",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2026-09-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance",
+ "name": "Eligibility Blocked vs Override",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Claim Eligibility Evaluation",
+ "report_name": "Eligibility Blocked vs Override",
+ "report_type": "Query Report",
+ "roles": [
+  {"role": "Insurance Manager"},
+  {"role": "Claims Adjuster"},
+  {"role": "System Manager"}
+ ],
+ "query": "select\n\te.overall_status,\n\tcount(*) as evaluations,\n\tsum(case when e.can_submit = 1 then 1 else 0 end) as proceeded,\n\tsum(case when e.can_submit = 0 then 1 else 0 end) as blocked,\n\tsum(case when e.overridden_by is not null and e.overridden_by != '' then 1 else 0 end) as overridden,\n\tsum(case when e.overridden_by is not null and e.overridden_by != '' and cl.status in ('Approved', 'Partially Approved', 'Settled') then 1 else 0 end) as override_then_approved\nfrom `tabClaim Eligibility Evaluation` e\nleft join `tabInsurance Claim` cl on cl.name = e.insurance_claim\ngroup by e.overall_status\norder by evaluations desc"
+}

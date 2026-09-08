@@ -213,17 +213,17 @@
    "link_fieldname": "client",
    "group": "Opportunities"
   },
-  {
-   "link_doctype": "Client KYC",
-   "link_fieldname": "client",
-   "group": "KYC"
-  },
-  {
-   "link_doctype": "Insurance Grievance",
-   "link_fieldname": "client",
-   "group": "Grievances"
-  }
- ],
+   {
+    "link_doctype": "Client KYC",
+    "link_fieldname": "client",
+    "group": "KYC"
+   },
+   {
+    "link_doctype": "Insurance Grievance",
+    "link_fieldname": "client",
+    "group": "Grievances"
+   }
+  ],
  "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",

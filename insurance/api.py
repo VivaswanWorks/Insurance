@@ -69,3 +69,24 @@ def apply_endorsement(name):
 	from insurance.insurance.doctype.policy_endorsement.policy_endorsement import apply_endorsement as _fn
 
 	return _fn(name)
+
+
+@frappe.whitelist()
+def evaluate_claim_eligibility(claim_name):
+	from insurance.eligibility import evaluate_claim_eligibility_api
+
+	return evaluate_claim_eligibility_api(claim_name, throw=0)
+
+
+@frappe.whitelist()
+def get_applicable_criteria(scheme=None, claim_type=None, provider=None):
+	from insurance.eligibility import get_applicable_criteria_api
+
+	return get_applicable_criteria_api(scheme=scheme, claim_type=claim_type, provider=provider)
+
+
+@frappe.whitelist()
+def recalculate_score(claim_name):
+	from insurance.eligibility import recalculate_score as _fn
+
+	return _fn(claim_name)

@@ -27,11 +27,17 @@
   "enable_crm",
   "enable_helpdesk",
   "enable_healthcare",
-  "section_accounts",
-  "premium_income_account",
-  "claims_expense_account",
-  "commission_expense_account"
- ],
+   "section_eligibility",
+   "enable_eligibility_engine",
+   "eligibility_score_threshold",
+   "eligibility_override_role",
+   "max_intimation_days",
+   "normalize_weightage",
+   "section_accounts",
+   "premium_income_account",
+   "claims_expense_account",
+   "commission_expense_account"
+  ],
  "fields": [
   {
    "fieldname": "section_naming",
@@ -143,11 +149,47 @@
    "fieldtype": "Check",
    "label": "Enable Healthcare Integration"
   },
-  {
-   "fieldname": "section_accounts",
-   "fieldtype": "Section Break",
-   "label": "Default Accounts"
-  },
+   {
+    "fieldname": "section_eligibility",
+    "fieldtype": "Section Break",
+    "label": "Eligibility Engine"
+   },
+   {
+    "default": "1",
+    "fieldname": "enable_eligibility_engine",
+    "fieldtype": "Check",
+    "label": "Enable Eligibility Engine"
+   },
+   {
+    "default": "70",
+    "fieldname": "eligibility_score_threshold",
+    "fieldtype": "Percent",
+    "label": "Minimum Claim Success Score (%)"
+   },
+   {
+    "default": "Insurance Manager",
+    "fieldname": "eligibility_override_role",
+    "fieldtype": "Link",
+    "label": "Default Override Role",
+    "options": "Role"
+   },
+   {
+    "default": "30",
+    "fieldname": "max_intimation_days",
+    "fieldtype": "Int",
+    "label": "Max Days for Claim Intimation"
+   },
+   {
+    "default": "1",
+    "fieldname": "normalize_weightage",
+    "fieldtype": "Check",
+    "label": "Normalize Weightages to 100%"
+   },
+   {
+    "fieldname": "section_accounts",
+    "fieldtype": "Section Break",
+    "label": "Default Accounts"
+   },
   {
    "fieldname": "premium_income_account",
    "fieldtype": "Data",

@@ -1,3 +1,6 @@
+import json
+import os
+
 import frappe
 
 
@@ -13,10 +16,12 @@ ROLES = [
 def after_install():
 	ensure_roles()
 	ensure_module()
+	seed_eligibility_criteria()
 
 
 def after_migrate():
 	ensure_roles()
+	seed_eligibility_criteria()
 
 
 def ensure_roles():
@@ -33,3 +38,21 @@ def ensure_module():
 			"module_name": "Insurance",
 			"app_name": "insurance",
 		}).insert(ignore_permissions=True)
+
+
+def seed_eligibility_criteria():
+	if not frappe.db.exists("DocType", "Client Eligibility Criteria"):
+		return
+	path = frappe.get_app_path("insurance", "fixtures", "client_eligibility_criteria.json")
+	if not os.path.exists(path):
+		return
+	with open(path) as handle:
+		rows = json.load(handle)
+	for row in rows:
+		code = row.get("criteria_code")
+		if not code:
+			continue
+		if frappe.db.exists("Client Eligibility Criteria", {"criteria_code": code}):
+			continue
+		doc = frappe.get_doc(row)
+		doc.insert(ignore_permissions=True)

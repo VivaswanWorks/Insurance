@@ -326,12 +326,17 @@
    "link_fieldname": "policy",
    "group": "Commission"
   },
-  {
-   "link_doctype": "Insurance Communication",
-   "link_fieldname": "related_name",
-   "group": "Communications"
-  }
- ],
+   {
+    "link_doctype": "Insurance Communication",
+    "link_fieldname": "related_name",
+    "group": "Communications"
+   },
+   {
+    "link_doctype": "Claim Eligibility Evaluation",
+    "link_fieldname": "insurance_policy",
+    "group": "Eligibility"
+   }
+  ],
  "modified": "2026-09-06 12:00:00",
  "modified_by": "Administrator",
  "module": "Insurance",

@@ -148,6 +148,12 @@ def lapse_grace_policies():
 			frappe.db.set_value("Insurance Client", p.client, "lifecycle_stage", "Lapsed")
 
 
+def rescore_open_claims():
+	from insurance.eligibility import rescore_open_claims as _rescore
+
+	_rescore()
+
+
 def flush_queued_communications():
 	queued = frappe.get_all(
 		"Insurance Communication",
