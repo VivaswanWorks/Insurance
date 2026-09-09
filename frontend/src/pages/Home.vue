@@ -61,7 +61,11 @@
           <Button @click="$router.push('/claims')">View all</Button>
         </div>
         <div class="bg-white border rounded-lg divide-y">
-          <div v-for="c in dashboard.claims" :key="c.name" class="p-4 flex justify-between items-center">
+          <div
+            v-for="c in dashboard.claims"
+            :key="c.name"
+            class="p-4 flex justify-between items-center hover:bg-gray-50 cursor-pointer"
+            @click="$router.push(`/claims/${c.name}`)">
             <div>
               <div class="font-medium">{{ c.claim_number }}</div>
               <div class="text-sm text-gray-500">{{ c.incident_date }} · {{ c.claimed_amount }}</div>
