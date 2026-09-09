@@ -31,6 +31,12 @@ def _assert_owns_policy(policy_name, client):
 		frappe.throw(_("You do not have access to this policy."), frappe.PermissionError)
 
 
+def _assert_owns_claim(claim_name, client):
+	owner = frappe.db.get_value("Insurance Claim", claim_name, "client")
+	if owner != client:
+		frappe.throw(_("You do not have access to this claim."), frappe.PermissionError)
+
+
 @frappe.whitelist()
 def portal_dashboard():
 	client = _current_client()
@@ -121,6 +127,17 @@ def portal_list_claims():
 
 
 @frappe.whitelist()
+def portal_get_claim(claim):
+	client = _current_client()
+	_assert_owns_claim(claim, client)
+	doc = frappe.get_doc("Insurance Claim", claim)
+	return {
+		"claim": doc.as_dict(),
+		"documents": [d.as_dict() for d in doc.get("claim_documents") or []],
+	}
+
+
+@frappe.whitelist()
 def portal_intimate_claim(policy, claim_type, incident_date, claimed_amount, description=None, claimant=None):
 	client = _current_client()
 	_assert_owns_policy(policy, client)
@@ -178,3 +195,19 @@ def portal_policy_print(policy):
 	from insurance_core.print_formats import get_print_html
 
 	return get_print_html("Insurance Policy", policy)
+
+
+@frappe.whitelist()
+def portal_claim_print(claim, settlement=0):
+	client = _current_client()
+	_assert_owns_claim(claim, client)
+	from insurance_core.print_formats import get_print_html
+
+	key = "claim_settlement" if cint(settlement) else "Insurance Claim"
+	return get_print_html("Insurance Claim", claim, template_key=key)
+
+
+def cint(v):
+	from frappe.utils import cint as _cint
+
+	return _cint(v)
