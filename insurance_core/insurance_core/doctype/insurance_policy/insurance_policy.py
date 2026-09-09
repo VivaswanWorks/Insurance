@@ -29,6 +29,12 @@ class InsurancePolicy(Document):
 		self.total_premium = flt(self.premium_amount) + flt(self.tax_amount)
 		if self.commission_rate and self.premium_amount and not self.commission_amount:
 			self.commission_amount = flt(self.premium_amount) * flt(self.commission_rate) / 100.0
+		try:
+			from insurance_core.reinsurance import apply_treaty_defaults
+
+			apply_treaty_defaults(self)
+		except Exception:
+			pass
 
 	def validate_dates(self):
 		if self.start_date and self.end_date and getdate(self.end_date) <= getdate(self.start_date):
