@@ -26,15 +26,19 @@
 - Types: Member Addition/Deletion, Sum Insured Change, Address Change, Nominee Change, Correction, Cancellation
 - Auto estimate of premium impact; apply updates the parent policy
 - Desk buttons: Approve, Reject, Apply, Estimate Premium Impact
+- Portal: clients can request endorsements from policy detail
 
 ### D. Reinsurance (Basic)
 - Facultative / Treaty tagging on policies
 - Cession percentage and recovery tracking on claims
 
 ### E. Commission & Agency Management
-- **Commission Rule** (scheme / provider / event + rate or fixed amount)
-- Auto accrual of **Commission Payout** when a policy becomes Active (Issue / Renewal)
-- Approve → Mark Paid workflow; Agent Commission report
+- **Commission Rule** (scheme / provider / event + rate and/or fixed amount)
+- Auto accrual of **Commission Payout**:
+  - **Issue / Renewal** when policy becomes Active
+  - **Collection** when `payment_status` becomes Paid
+  - Positive premium impact on applied endorsements
+- Approve → Mark Paid workflow; Agent Commission summary API
 
 ### F. TPA / Network Hospital Management
 - Preferred provider network
@@ -49,12 +53,13 @@
 - API: `insurance_core.api.get_print_html` / portal download
 
 ### H. Portal / Customer Self-Service
-- Vue SPA at `/insurance_core`
-- Dashboard, policies list/detail, claim intimation, endorsement request, policy schedule download
+- Vue SPA at `/insurance_core` (shared nav: Dashboard, Policies, Claims, New Claim)
+- Dashboard, policies list/detail, claim intimation, endorsement request
+- Download policy schedule; download settlement letter for settled claims
 - API module: `insurance_core.portal` (scoped by client email ↔ logged-in user)
 
 ### I. Analytics & MIS
-- Agent Commission report
+- Agent Commission summary
 - Further Insights dashboards planned (see `specs/08_Integration.md`)
 
 ## Installation
@@ -88,10 +93,11 @@ SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 3. **Approve** (Insurance Manager), then **Apply to Policy**.
 
 ### Commissions
-1. Define **Commission Rule** rows (event Issue/Renewal/Collection).
+1. Define **Commission Rule** rows (event Issue / Renewal / Collection; rate and/or fixed amount).
 2. Ensure the policy `agent` matches an **Insurance Agent** (code or name).
-3. When policy status becomes **Active**, a **Commission Payout** is accrued.
-4. Approve and Mark Paid from the payout form; review **Agent Commission** report.
+3. When policy status becomes **Active**, a **Commission Payout** is accrued (Issue/Renewal).
+4. When `payment_status` becomes **Paid**, a Collection payout is accrued.
+5. Approve and Mark Paid from the payout form.
 
 ### Print formats
 ```python
@@ -102,7 +108,7 @@ frappe.call("insurance_core.api.get_print_html", doctype="Insurance Claim", name
 ### Customer portal
 1. Link the client’s email to a Frappe User.
 2. Open `/insurance_core` while logged in as that user.
-3. View policies, download schedule, intimate claims, request endorsements.
+3. View policies, download schedule, intimate claims, request endorsements, download settlement letters.
 
 ## Resources
 
