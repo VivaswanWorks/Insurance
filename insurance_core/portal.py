@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
-from frappe.utils import flt, nowdate
+from frappe.utils import cint, flt, nowdate
 
 
 def _current_client():
@@ -205,9 +205,3 @@ def portal_claim_print(claim, settlement=0):
 
 	key = "claim_settlement" if cint(settlement) else "Insurance Claim"
 	return get_print_html("Insurance Claim", claim, template_key=key)
-
-
-def cint(v):
-	from frappe.utils import cint as _cint
-
-	return _cint(v)
