@@ -76,6 +76,7 @@ class InsurancePolicy(Document):
 	def on_update(self):
 		self.sync_client_stage()
 		self.maybe_accrue_commission()
+		self.maybe_accrue_collection_commission()
 		if hasattr(self, "sync_linked_apps"):
 			self.sync_linked_apps()
 
@@ -91,6 +92,23 @@ class InsurancePolicy(Document):
 			accrue_commission(self, event=event)
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Policy Commission Accrual")
+
+	def maybe_accrue_collection_commission(self):
+		"""Accrue Collection event commission when premium is marked Paid."""
+		if self.payment_status != "Paid":
+			return
+		if not self.has_value_changed("payment_status"):
+			return
+		try:
+			from insurance_core.commission import accrue_commission
+
+			accrue_commission(
+				self,
+				event="Collection",
+				reference=f"{self.name}-COL-{self.payment_status}",
+			)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Policy Collection Commission")
 
 	def after_insert(self):
 		self.copy_scheme_coverages()
