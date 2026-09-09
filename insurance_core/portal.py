@@ -38,6 +38,89 @@ def _assert_owns_claim(claim_name, client):
 
 
 @frappe.whitelist()
+def portal_me():
+	"""Current user + linked insurance client for the app shell."""
+	user = frappe.session.user
+	if not user or user == "Guest":
+		frappe.throw(_("Please log in to access the portal."), frappe.PermissionError)
+
+	user_doc = frappe.db.get_value(
+		"User",
+		user,
+		["name", "full_name", "email", "user_image", "first_name", "last_name"],
+		as_dict=True,
+	) or {}
+
+	email = user_doc.get("email") or user
+	client_name = frappe.db.get_value("Insurance Client", {"email": email}, "name")
+	client = None
+	if client_name:
+		client = frappe.get_cached_value(
+			"Insurance Client",
+			client_name,
+			["name", "full_name", "email", "phone", "lifecycle_stage"],
+			as_dict=True,
+		)
+	elif "System Manager" in frappe.get_roles() and frappe.form_dict.get("client"):
+		client = frappe.get_cached_value(
+			"Insurance Client",
+			frappe.form_dict.get("client"),
+			["name", "full_name", "email", "phone", "lifecycle_stage"],
+			as_dict=True,
+		)
+
+	return {
+		"user": {
+			"name": user_doc.get("name") or user,
+			"full_name": user_doc.get("full_name") or user,
+			"email": email,
+			"user_image": user_doc.get("user_image"),
+		},
+		"client": client,
+	}
+
+
+@frappe.whitelist()
+def portal_search(q=None, limit=10):
+	"""Search the current client's policies and claims."""
+	client = _current_client()
+	q = (q or "").strip()
+	if not q or len(q) < 2:
+		return {"policies": [], "claims": []}
+
+	limit = min(cint(limit) or 10, 25)
+	like = f"%{q}%"
+
+	policies = frappe.get_all(
+		"Insurance Policy",
+		filters={"client": client},
+		or_filters=[
+			["policy_number", "like", like],
+			["name", "like", like],
+			["scheme", "like", like],
+			["provider", "like", like],
+		],
+		fields=["name", "policy_number", "status", "scheme", "end_date"],
+		order_by="modified desc",
+		limit_page_length=limit,
+	)
+	claims = frappe.get_all(
+		"Insurance Claim",
+		filters={"client": client},
+		or_filters=[
+			["claim_number", "like", like],
+			["name", "like", like],
+			["claim_type", "like", like],
+			["policy", "like", like],
+		],
+		fields=["name", "claim_number", "status", "claim_type", "incident_date", "claimed_amount"],
+		order_by="modified desc",
+		limit_page_length=limit,
+	)
+	return {"policies": policies, "claims": claims}
+
+
+@frappe.whitelist()
 def portal_dashboard():
 	client = _current_client()
 	policies = frappe.get_all(
