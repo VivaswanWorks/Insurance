@@ -9,7 +9,7 @@
 6. **Compliance Tracking** – Regulatory, audit, document control
 7. **Automated Communications** – Reminders, status updates, multi-channel
 
-## Additional Features.
+## Additional Features
 
 ### A. Quotation / Proposal Engine
 - Generate personalized quotes from Scheme + client details (age, sum insured, members, loadings)
@@ -17,24 +17,24 @@
 - Comparison of multiple schemes side-by-side
 
 ### B. Premium Calculation Engine
-- Central service / method that all modules call
-- Supports age-band, sum-insured slabs, family floater, loadings (smoker, occupation), discounts (NCB, loyalty), taxes
-- Audit log of every calculation
+- Central service / method that all modules call (`insurance_core.premium.calculate_premium`)
+- Supports age-band, sum-insured slabs, family floater, loadings, discounts, taxes
+- Audit log of every calculation (`Premium Calculation Log`)
 
 ### C. Endorsement Management
-- Dedicated DocType for mid-term changes (already outlined in Policy module)
-- Financial impact calculation (additional / refund premium)
-- Approval workflow
+- DocType **Policy Endorsement** with workflow: Draft → Submitted → Approved → Applied / Rejected
+- Types: Member Addition/Deletion, Sum Insured Change, Address Change, Nominee Change, Correction, Cancellation
+- Auto estimate of premium impact; apply updates the parent policy
+- Desk buttons: Approve, Reject, Apply, Estimate Premium Impact
 
 ### D. Reinsurance (Basic)
-- Facultative / Treaty tagging on large policies
+- Facultative / Treaty tagging on policies
 - Cession percentage and recovery tracking on claims
 
 ### E. Commission & Agency Management
-- Agent / Broker master (can extend Sales Partner or custom)
-- Commission rules per scheme / provider
-- Commission calculation on policy issue / renewal / collection
-- Payout tracking
+- **Commission Rule** (scheme / provider / event + rate or fixed amount)
+- Auto accrual of **Commission Payout** when a policy becomes Active (Issue / Renewal)
+- Approve → Mark Paid workflow; Agent Commission report
 
 ### F. TPA / Network Hospital Management
 - Preferred provider network
@@ -42,80 +42,20 @@
 - TPA-wise claim routing
 
 ### G. Document Generation
-- Policy Schedule / Certificate PDF (Print Format + Jinja)
-- Claim form, discharge voucher, settlement letter
-- Use Frappe’s Print Format + optional wkhtmltopdf / WeasyPrint
+- Jinja templates under `insurance_core/templates/print_formats/`:
+  - Policy Schedule
+  - Claim Form
+  - Settlement Letter
+- API: `insurance_core.api.get_print_html` / portal download
 
 ### H. Portal / Customer Self-Service
-- Web portal or desk page for clients to:
-  - View policies & documents
-  - Download policy copy
-  - Intimate claim
-  - Upload documents
-  - Request endorsement
-  - Pay premium (via payment gateway)
+- Vue SPA at `/insurance_core`
+- Dashboard, policies list/detail, claim intimation, endorsement request, policy schedule download
+- API module: `insurance_core.portal` (scoped by client email ↔ logged-in user)
 
 ### I. Analytics & MIS
-- Built-in reports + Insights dashboards (see Integration.md)
-- Incurred Claim Ratio, Persistency, Average Premium, Channel performance
-
-### J. Mobile / Offline Considerations
-- Progressive Web App friendly forms
-- Critical offline actions (claim intimation) if needed later
-
-## App Structure
-```
-insurance_core/                     # Frappe app / git root
-├── pyproject.toml
-├── license.txt
-├── README.md
-├── frontend/                       # Vue 3 + Vite + Tailwind + frappe-ui
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── src/
-├── insurance_core/                 # Python package
-│   ├── hooks.py
-│   ├── modules.txt
-│   ├── api.py
-│   ├── public/
-│   │   ├── images/insurance.svg
-│   │   └── frontend/               # Vite build output
-│   ├── www/insurance_core.html     # SPA shell at /insurance_core
-│   └── insurance_core/doctype/
-└── specs/
-```
-
-## Development Guidelines for Coding Agents
-1. Follow Frappe coding standards (naming, permissions, documentation strings).
-2. Every DocType must have clear `validate`, `before_submit`, `on_submit`, `on_cancel` methods.
-3. Use `frappe.throw` with meaningful messages and title.
-4. Write unit tests for premium calculation, status transitions, and accounting hooks.
-5. Prefer Server Scripts / Client Scripts only for light customizations; core logic in Python controllers.
-6. Make all Select options and workflows configurable via Insurance Settings where possible.
-7. Internationalization: wrap all user-facing strings with `_()`.
-8. Security: never expose sensitive medical / financial data in list views without permission checks.
-
-## Settings DocType
-Create **Insurance Settings** (Single) with:
-- Default naming series
-- Default accounts
-- Grace period days
-- Reminder days (30/15/7)
-- Enable WhatsApp / SMS flags
-- Integration toggles
-- Compliance retention periods
-
-## Next Steps for Agents
-1. Implement masters first: Provider → Scheme
-2. Then Policy + Member + Endorsement
-3. Claims
-4. Communications & Schedulers
-5. Compliance & Checklists
-6. Integrations one by one (start with ERPNext Customer + Accounting)
-7. Portal & Print Formats
-8. Reports & Insights dashboards
-
+- Agent Commission report
+- Further Insights dashboards planned (see `specs/08_Integration.md`)
 
 ## Installation
 
@@ -131,7 +71,7 @@ yarn
 yarn build
 ```
 
-Dev server (proxies Frappe via `sites/common_site_config.json`):
+Dev server:
 
 ```bash
 cd frontend
@@ -140,11 +80,29 @@ yarn dev
 
 SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 
-
-
 ## Usage
 
+### Endorsements (Desk)
+1. Create **Policy Endorsement** linked to a policy.
+2. Optionally click **Estimate Premium Impact**.
+3. **Approve** (Insurance Manager), then **Apply to Policy**.
 
+### Commissions
+1. Define **Commission Rule** rows (event Issue/Renewal/Collection).
+2. Ensure the policy `agent` matches an **Insurance Agent** (code or name).
+3. When policy status becomes **Active**, a **Commission Payout** is accrued.
+4. Approve and Mark Paid from the payout form; review **Agent Commission** report.
+
+### Print formats
+```python
+frappe.call("insurance_core.api.get_print_html", doctype="Insurance Policy", name="POL-…")
+frappe.call("insurance_core.api.get_print_html", doctype="Insurance Claim", name="CLM-…", template_key="claim_settlement")
+```
+
+### Customer portal
+1. Link the client’s email to a Frappe User.
+2. Open `/insurance_core` while logged in as that user.
+3. View policies, download schedule, intimate claims, request endorsements.
 
 ## Resources
 
