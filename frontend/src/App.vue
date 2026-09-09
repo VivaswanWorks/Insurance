@@ -1,21 +1,23 @@
 <template>
   <div class="min-h-screen bg-gray-50 text-gray-900 flex">
     <!-- Mobile overlay -->
-    <div
-      v-if="mobileOpen"
-      class="fixed inset-0 bg-black/40 z-30 lg:hidden"
-      @click="mobileOpen = false" />
+    <transition name="sidebar-overlay">
+      <div
+        v-if="mobileOpen"
+        class="fixed inset-0 bg-black/40 z-30 lg:hidden"
+        @click="mobileOpen = false" />
+    </transition>
 
     <!-- Sidebar -->
     <aside
-      class="fixed lg:sticky top-0 left-0 z-40 h-screen flex flex-col bg-white border-r border-gray-200 transition-all duration-200"
+      class="sidebar fixed lg:sticky top-0 left-0 z-40 h-screen flex flex-col bg-white border-r border-gray-200"
       :class="[
-        collapsed ? 'w-[4.25rem]' : 'w-60',
-        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        collapsed ? 'sidebar--collapsed' : 'sidebar--expanded',
+        mobileOpen ? 'sidebar--mobile-open' : 'sidebar--mobile-closed',
       ]">
-      <div class="h-14 flex items-center gap-2 px-3 border-b shrink-0">
+      <div class="h-14 flex items-center gap-2 px-3 border-b shrink-0 overflow-hidden">
         <button
-          class="hidden lg:inline-flex h-9 w-9 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100"
+          class="hidden lg:inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
           :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
           @click="collapsed = !collapsed">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,18 +30,15 @@
         </button>
         <router-link
           to="/"
-          class="font-semibold tracking-tight text-gray-900 no-underline truncate"
-          :class="collapsed ? 'sr-only lg:hidden' : ''"
+          class="sidebar-label font-semibold tracking-tight text-gray-900 no-underline truncate"
           @click="mobileOpen = false">
           Insurance Portal
         </router-link>
       </div>
 
-      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+      <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 px-2 space-y-4">
         <div v-for="group in navGroups" :key="group.title">
-          <div
-            v-if="!collapsed"
-            class="px-2 mb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+          <div class="sidebar-group-title px-2 mb-1 text-[11px] font-semibold uppercase tracking-wider text-gray-400">
             {{ group.title }}
           </div>
           <div class="space-y-0.5">
@@ -47,32 +46,38 @@
               v-for="item in group.items"
               :key="item.to"
               :to="item.to"
-              class="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm text-gray-600 no-underline hover:bg-gray-100 hover:text-gray-900"
+              class="sidebar-link flex items-center gap-3 rounded-md px-2.5 py-2 text-sm text-gray-600 no-underline hover:bg-gray-100 hover:text-gray-900"
               :class="isActive(item) ? 'bg-gray-100 text-gray-900 font-medium' : ''"
               :title="item.label"
               @click="mobileOpen = false">
-              <span class="shrink-0 w-5 h-5 flex items-center justify-center text-gray-500" v-html="item.icon" />
-              <span v-show="!collapsed" class="truncate">{{ item.label }}</span>
+              <span
+                class="sidebar-icon shrink-0 w-5 h-5 flex items-center justify-center text-gray-500"
+                v-html="item.icon" />
+              <span class="sidebar-label truncate">{{ item.label }}</span>
             </router-link>
           </div>
         </div>
       </nav>
 
-      <div class="border-t p-2 shrink-0">
+      <div class="border-t p-2 shrink-0 overflow-hidden">
         <button
-          class="w-full flex items-center gap-3 rounded-md px-2.5 py-2 text-sm text-gray-600 hover:bg-gray-100"
+          class="sidebar-link w-full flex items-center gap-3 rounded-md px-2.5 py-2 text-sm text-gray-600 hover:bg-gray-100"
           :title="collapsed ? 'Expand' : 'Collapse'"
           @click="collapsed = !collapsed">
-          <span class="shrink-0 w-5 h-5 flex items-center justify-center">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span class="sidebar-icon shrink-0 w-5 h-5 flex items-center justify-center">
+            <svg
+              class="sidebar-chevron w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                :d="collapsed ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7'" />
+                d="M15 19l-7-7 7-7" />
             </svg>
           </span>
-          <span v-show="!collapsed">Collapse</span>
+          <span class="sidebar-label truncate">Collapse</span>
         </button>
       </div>
     </aside>
@@ -370,3 +375,129 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.sidebar {
+  width: 15rem; /* w-60 */
+  transition:
+    width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, transform;
+}
+
+.sidebar--collapsed {
+  width: 4.25rem;
+}
+
+/* Labels & group titles: fade + collapse width so they animate with the rail */
+.sidebar-label,
+.sidebar-group-title {
+  display: inline-block;
+  max-width: 12rem;
+  opacity: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    opacity 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    padding 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar--collapsed .sidebar-label,
+.sidebar--collapsed .sidebar-group-title {
+  max-width: 0;
+  opacity: 0;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  pointer-events: none;
+}
+
+/* Tighten nav links when collapsed so icons sit centered */
+.sidebar-link {
+  transition: background-color 150ms ease, color 150ms ease, padding 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar--collapsed .sidebar-link {
+  justify-content: center;
+  gap: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.sidebar-icon {
+  transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar--collapsed .sidebar-icon {
+  transform: scale(1.05);
+}
+
+/* Collapse chevron rotates when rail is collapsed */
+.sidebar-chevron {
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar--collapsed .sidebar-chevron {
+  transform: rotate(180deg);
+}
+
+/* Mobile drawer: off-canvas by default, slide in when open */
+@media (max-width: 1023.98px) {
+  .sidebar {
+    width: 15rem;
+  }
+
+  .sidebar--mobile-closed {
+    transform: translateX(-100%);
+  }
+
+  .sidebar--mobile-open {
+    transform: translateX(0);
+  }
+
+  /* On mobile always show full labels */
+  .sidebar--collapsed .sidebar-label,
+  .sidebar--collapsed .sidebar-group-title {
+    max-width: 12rem;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sidebar--collapsed .sidebar-link {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
+  }
+
+  .sidebar--collapsed .sidebar-chevron {
+    transform: none;
+  }
+}
+
+/* Overlay fade */
+.sidebar-overlay-enter-active,
+.sidebar-overlay-leave-active {
+  transition: opacity 220ms ease;
+}
+
+.sidebar-overlay-enter-from,
+.sidebar-overlay-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-label,
+  .sidebar-group-title,
+  .sidebar-link,
+  .sidebar-icon,
+  .sidebar-chevron,
+  .sidebar-overlay-enter-active,
+  .sidebar-overlay-leave-active {
+    transition: none !important;
+  }
+}
+</style>
