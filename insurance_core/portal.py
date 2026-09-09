@@ -1,0 +1,180 @@
+"""Customer self-service portal API.
+
+Resolves the logged-in user to an Insurance Client via email and exposes
+read/write endpoints scoped to that client only.
+"""
+
+from __future__ import annotations
+
+import frappe
+from frappe import _
+from frappe.utils import flt, nowdate
+
+
+def _current_client():
+	user = frappe.session.user
+	if not user or user == "Guest":
+		frappe.throw(_("Please log in to access the portal."), frappe.PermissionError)
+	email = frappe.db.get_value("User", user, "email") or user
+	client = frappe.db.get_value("Insurance Client", {"email": email}, "name")
+	if not client:
+		# System Manager can pass client for testing via form_dict
+		if "System Manager" in frappe.get_roles() and frappe.form_dict.get("client"):
+			return frappe.form_dict.get("client")
+		frappe.throw(_("No insurance client profile is linked to your account."), frappe.PermissionError)
+	return client
+
+
+def _assert_owns_policy(policy_name, client):
+	owner = frappe.db.get_value("Insurance Policy", policy_name, "client")
+	if owner != client:
+		frappe.throw(_("You do not have access to this policy."), frappe.PermissionError)
+
+
+@frappe.whitelist()
+def portal_dashboard():
+	client = _current_client()
+	policies = frappe.get_all(
+		"Insurance Policy",
+		filters={"client": client},
+		fields=["name", "policy_number", "status", "sum_assured", "total_premium", "end_date", "scheme"],
+		order_by="modified desc",
+	)
+	claims = frappe.get_all(
+		"Insurance Claim",
+		filters={"client": client},
+		fields=["name", "claim_number", "status", "claimed_amount", "incident_date", "policy"],
+		order_by="modified desc",
+		limit=10,
+	)
+	active = [p for p in policies if p.status in ("Active", "Grace Period")]
+	return {
+		"client": frappe.get_cached_value(
+			"Insurance Client", client, ["name", "full_name", "email", "phone", "lifecycle_stage"], as_dict=True
+		),
+		"stats": {
+			"active_policies": len(active),
+			"total_policies": len(policies),
+			"open_claims": len([c for c in claims if c.status not in ("Settled", "Closed", "Rejected")]),
+		},
+		"policies": policies[:5],
+		"claims": claims,
+	}
+
+
+@frappe.whitelist()
+def portal_list_policies():
+	client = _current_client()
+	return frappe.get_all(
+		"Insurance Policy",
+		filters={"client": client},
+		fields=[
+			"name",
+			"policy_number",
+			"status",
+			"scheme",
+			"provider",
+			"sum_assured",
+			"premium_amount",
+			"total_premium",
+			"start_date",
+			"end_date",
+			"payment_status",
+			"policy_document",
+		],
+		order_by="end_date desc",
+	)
+
+
+@frappe.whitelist()
+def portal_get_policy(policy):
+	client = _current_client()
+	_assert_owns_policy(policy, client)
+	doc = frappe.get_doc("Insurance Policy", policy)
+	return {
+		"policy": doc.as_dict(),
+		"members": [m.as_dict() for m in doc.get("policy_members") or []],
+		"coverages": [c.as_dict() for c in doc.get("policy_coverages") or []],
+		"documents": [d.as_dict() for d in doc.get("other_documents") or []],
+	}
+
+
+@frappe.whitelist()
+def portal_list_claims():
+	client = _current_client()
+	return frappe.get_all(
+		"Insurance Claim",
+		filters={"client": client},
+		fields=[
+			"name",
+			"claim_number",
+			"policy",
+			"claim_type",
+			"status",
+			"claimed_amount",
+			"approved_amount",
+			"incident_date",
+			"submission_date",
+		],
+		order_by="modified desc",
+	)
+
+
+@frappe.whitelist()
+def portal_intimate_claim(policy, claim_type, incident_date, claimed_amount, description=None, claimant=None):
+	client = _current_client()
+	_assert_owns_policy(policy, client)
+	policy_doc = frappe.get_doc("Insurance Policy", policy)
+	if policy_doc.status not in ("Active", "Grace Period", "Claimed"):
+		frappe.throw(_("Claims can only be intimated on active policies."), title=_("Invalid Policy"))
+
+	doc = frappe.get_doc(
+		{
+			"doctype": "Insurance Claim",
+			"claim_number": f"P-{frappe.generate_hash(length=8)}",
+			"policy": policy,
+			"client": client,
+			"provider": policy_doc.provider,
+			"scheme": policy_doc.scheme,
+			"claim_type": claim_type or "Reimbursement",
+			"incident_date": incident_date or nowdate(),
+			"submission_date": nowdate(),
+			"reported_date": nowdate(),
+			"claimed_amount": flt(claimed_amount),
+			"status": "Submitted",
+			"intimation_mode": "Portal",
+			"description": description,
+			"claimant": claimant,
+			"agent": policy_doc.agent,
+		}
+	)
+	doc.insert(ignore_permissions=True)
+	return {"name": doc.name, "claim_number": doc.claim_number}
+
+
+@frappe.whitelist()
+def portal_request_endorsement(policy, endorsement_type, description, new_value=None, effective_date=None):
+	client = _current_client()
+	_assert_owns_policy(policy, client)
+	doc = frappe.get_doc(
+		{
+			"doctype": "Policy Endorsement",
+			"policy": policy,
+			"endorsement_type": endorsement_type,
+			"description": description or endorsement_type,
+			"new_value": new_value,
+			"effective_date": effective_date or nowdate(),
+			"status": "Submitted",
+		}
+	)
+	doc.insert(ignore_permissions=True)
+	return {"name": doc.name, "endorsement_number": doc.endorsement_number, "premium_impact": doc.premium_impact}
+
+
+@frappe.whitelist()
+def portal_policy_print(policy):
+	client = _current_client()
+	_assert_owns_policy(policy, client)
+	from insurance_core.print_formats import get_print_html
+
+	return get_print_html("Insurance Policy", policy)
