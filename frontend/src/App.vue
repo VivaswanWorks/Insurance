@@ -89,7 +89,7 @@
           </svg>
         </button>
 
-        <div class="relative flex-1 max-w-xl">
+        <div class="relative flex-1 max-w-xl" data-search-root>
           <div class="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -303,6 +303,9 @@ export default {
       this.closeSearch()
       this.profileOpen = false
     },
+    collapsed(v) {
+      localStorage.setItem('insurance_portal_sidebar_collapsed', v ? '1' : '0')
+    },
   },
   mounted() {
     document.addEventListener('click', this.onDocClick)
@@ -320,7 +323,6 @@ export default {
       if (item.match) {
         if (!path.startsWith(item.match)) return false
         if (item.exclude && path.startsWith(item.exclude)) return false
-        // Prefer exact /claims over /claims/new handled separately
         if (item.to === '/claims' && path === '/claims/new') return false
         return true
       }
@@ -343,8 +345,7 @@ export default {
       if (this.$refs.profileRoot && !this.$refs.profileRoot.contains(e.target)) {
         this.profileOpen = false
       }
-      // close search when clicking outside the search area unless inside results
-      if (this.searchOpen && !e.target.closest?.('.relative.flex-1')) {
+      if (this.searchOpen && !e.target.closest?.('[data-search-root]')) {
         this.searchOpen = false
       }
     },
@@ -365,11 +366,6 @@ export default {
       } finally {
         window.location.href = '/login?redirect-to=/insurance_core'
       }
-    },
-  },
-  watch: {
-    collapsed(v) {
-      localStorage.setItem('insurance_portal_sidebar_collapsed', v ? '1' : '0')
     },
   },
 }
