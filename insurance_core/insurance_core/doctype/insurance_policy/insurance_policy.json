@@ -45,6 +45,8 @@
   "other_documents",
   "section_reinsurance",
   "reinsurance_type",
+  "reinsurance_treaty",
+  "reinsurer",
   "cession_percentage",
   "section_checklist",
   "compliance_checklist"
@@ -289,7 +291,21 @@
    "fieldname": "reinsurance_type",
    "fieldtype": "Select",
    "label": "Reinsurance Type",
-   "options": "\nFacultative\nTreaty"
+   "options": "\nFacultative\nTreaty",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "reinsurance_treaty",
+   "fieldtype": "Link",
+   "label": "Reinsurance Treaty",
+   "options": "Reinsurance Treaty",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "reinsurer",
+   "fieldtype": "Link",
+   "label": "Reinsurer",
+   "options": "Insurance Provider"
   },
   {
    "fieldname": "cession_percentage",
@@ -326,18 +342,18 @@
    "link_fieldname": "policy",
    "group": "Commission"
   },
-   {
-    "link_doctype": "Insurance Communication",
-    "link_fieldname": "related_name",
-    "group": "Communications"
-   },
-   {
-    "link_doctype": "Claim Eligibility Evaluation",
-    "link_fieldname": "insurance_policy",
-    "group": "Eligibility"
-   }
-  ],
- "modified": "2026-09-06 12:00:00",
+  {
+   "link_doctype": "Insurance Communication",
+   "link_fieldname": "related_name",
+   "group": "Communications"
+  },
+  {
+   "link_doctype": "Claim Eligibility Evaluation",
+   "link_fieldname": "insurance_policy",
+   "group": "Eligibility"
+  }
+ ],
+ "modified": "2026-09-09 00:00:00",
  "modified_by": "Administrator",
  "module": "Insurance Core",
  "name": "Insurance Policy",
