@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
-from frappe.utils import cint, flt, nowdate
+from frappe.utils import cint, flt, now_datetime, nowdate
 
 
 def _current_client():
@@ -131,8 +131,54 @@ def portal_get_claim(claim):
 	client = _current_client()
 	_assert_owns_claim(claim, client)
 	doc = frappe.get_doc("Insurance Claim", claim)
+	policy_number = frappe.db.get_value("Insurance Policy", doc.policy, "policy_number") if doc.policy else None
 	return {
 		"claim": doc.as_dict(),
+		"policy_number": policy_number,
+		"documents": [d.as_dict() for d in doc.get("claim_documents") or []],
+	}
+
+
+@frappe.whitelist()
+def portal_upload_claim_document(claim, document_type, file_url=None):
+	"""Append a Claim Document row. Pass file_url from /api/method/upload_file."""
+	client = _current_client()
+	_assert_owns_claim(claim, client)
+
+	status = frappe.db.get_value("Insurance Claim", claim, "status")
+	if status in ("Settled", "Closed", "Rejected"):
+		frappe.throw(_("Documents cannot be uploaded on a {0} claim.").format(status))
+
+	document_type = (document_type or "").strip()
+	allowed = {
+		"Discharge Summary",
+		"Bills",
+		"Reports",
+		"ID Proof",
+		"FIR",
+		"Estimate",
+		"Other",
+	}
+	if document_type not in allowed:
+		frappe.throw(_("Invalid document type."))
+
+	if not file_url:
+		frappe.throw(_("Please upload a file."))
+
+	doc = frappe.get_doc("Insurance Claim", claim)
+	doc.append(
+		"claim_documents",
+		{
+			"document_type": document_type,
+			"attachment": file_url,
+			"uploaded_by": frappe.session.user,
+			"uploaded_on": now_datetime(),
+		},
+	)
+	doc.save(ignore_permissions=True)
+	frappe.db.commit()
+	return {
+		"name": doc.name,
 		"documents": [d.as_dict() for d in doc.get("claim_documents") or []],
 	}
 
