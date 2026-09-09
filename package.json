@@ -1,5 +1,5 @@
 {
-  "name": "insurance",
+  "name": "insurance_core",
   "private": true,
   "version": "0.0.1",
   "scripts": {

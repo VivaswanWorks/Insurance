@@ -1,0 +1,399 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "ELC-.YYYY.-.#####",
+ "creation": "2026-09-07 00:00:00",
+ "default_view": "List",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_header",
+  "criteria_name",
+  "criteria_code",
+  "column_break_header",
+  "status",
+  "is_system",
+  "criteria_version",
+  "description",
+  "section_scope",
+  "applies_to",
+  "scheme_type",
+  "insurance_scheme",
+  "insurance_provider",
+  "column_break_scope",
+  "claim_type",
+  "evaluation_stage",
+  "section_scoring",
+  "is_mandatory",
+  "weightage",
+  "pass_score",
+  "column_break_scoring",
+  "failure_action",
+  "override_role",
+  "severity",
+  "section_logic",
+  "evaluation_method",
+  "source_doctype",
+  "field_to_check",
+  "operator",
+  "expected_value",
+  "python_expression",
+  "custom_script",
+  "external_api",
+  "checklist_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_header",
+   "fieldtype": "Section Break",
+   "label": "Criteria"
+  },
+  {
+   "fieldname": "criteria_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Criteria Name",
+   "reqd": 1,
+   "unique": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "criteria_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Criteria Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nInactive",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_system",
+   "fieldtype": "Check",
+   "label": "Is System Criteria"
+  },
+  {
+   "default": "1",
+   "fieldname": "criteria_version",
+   "fieldtype": "Int",
+   "label": "Criteria Version",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "section_scope",
+   "fieldtype": "Section Break",
+   "label": "Scope"
+  },
+  {
+   "default": "All Schemes",
+   "fieldname": "applies_to",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Applies To",
+   "options": "All Schemes\nSpecific Scheme Type\nSpecific Scheme\nSpecific Provider",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.applies_to=='Specific Scheme Type'",
+   "fieldname": "scheme_type",
+   "fieldtype": "Select",
+   "label": "Scheme Type",
+   "mandatory_depends_on": "eval:doc.applies_to=='Specific Scheme Type'",
+   "options": "Life\nHealth\nMotor\nProperty\nLiability\nTravel\nCyber\nMarine\nOther"
+  },
+  {
+   "depends_on": "eval:doc.applies_to=='Specific Scheme'",
+   "fieldname": "insurance_scheme",
+   "fieldtype": "Link",
+   "label": "Insurance Scheme",
+   "mandatory_depends_on": "eval:doc.applies_to=='Specific Scheme'",
+   "options": "Insurance Scheme"
+  },
+  {
+   "depends_on": "eval:doc.applies_to=='Specific Provider'",
+   "fieldname": "insurance_provider",
+   "fieldtype": "Link",
+   "label": "Insurance Provider",
+   "mandatory_depends_on": "eval:doc.applies_to=='Specific Provider'",
+   "options": "Insurance Provider"
+  },
+  {
+   "fieldname": "column_break_scope",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "All",
+   "fieldname": "claim_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Applicable Claim Type",
+   "options": "All\nCashless\nReimbursement\nThird Party\nDeath\nDisability\nProperty\nOther"
+  },
+  {
+   "default": "Claim Intake",
+   "fieldname": "evaluation_stage",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Evaluation Stage",
+   "options": "Policy Issuance\nClaim Intake\nBoth\nPre-Authorization",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_scoring",
+   "fieldtype": "Section Break",
+   "label": "Scoring & Enforcement"
+  },
+   {
+   "default": "0",
+   "fieldname": "is_mandatory",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Mandatory"
+  },
+  {
+   "default": "0",
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Weightage (%)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pass_score",
+   "fieldtype": "Percent",
+   "label": "Minimum Pass Score (if scored)"
+  },
+  {
+   "fieldname": "column_break_scoring",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Block Submission",
+   "fieldname": "failure_action",
+   "fieldtype": "Select",
+   "label": "Failure Action",
+   "options": "Block Submission\nWarning Only\nRequire Override\nAuto-Reject",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.failure_action=='Require Override'",
+   "fieldname": "override_role",
+   "fieldtype": "Link",
+   "label": "Override Allowed For Role",
+   "mandatory_depends_on": "eval:doc.failure_action=='Require Override'",
+   "options": "Role"
+  },
+  {
+   "default": "Medium",
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Severity",
+   "options": "Critical\nHigh\nMedium\nLow",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_logic",
+   "fieldtype": "Section Break",
+   "label": "Evaluation Logic"
+  },
+  {
+   "default": "Field Check",
+   "fieldname": "evaluation_method",
+   "fieldtype": "Select",
+   "label": "Evaluation Method",
+   "options": "Field Check\nExpression\nScript\nExternal API\nChecklist",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Field Check'",
+   "fieldname": "source_doctype",
+   "fieldtype": "Link",
+   "label": "Source DocType",
+   "options": "DocType"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Field Check'",
+   "fieldname": "field_to_check",
+   "fieldtype": "Data",
+   "label": "Field to Check"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Field Check'",
+   "fieldname": "operator",
+   "fieldtype": "Select",
+   "label": "Operator",
+   "options": "Equals\nNot Equals\nGreater Than\nLess Than\nIn\nNot In\nIs Set\nIs Not Set\nContains"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Field Check'",
+   "fieldname": "expected_value",
+   "fieldtype": "Data",
+   "label": "Expected Value"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Expression'",
+   "fieldname": "python_expression",
+   "fieldtype": "Code",
+   "label": "Python Expression",
+   "options": "Python"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Script'",
+   "fieldname": "custom_script",
+   "fieldtype": "Data",
+   "label": "Custom Script Path"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='External API'",
+   "fieldname": "external_api",
+   "fieldtype": "Data",
+   "label": "External API Endpoint"
+  },
+  {
+   "depends_on": "eval:doc.evaluation_method=='Checklist'",
+   "fieldname": "checklist_items",
+   "fieldtype": "Table",
+   "label": "Checklist Items",
+   "options": "Eligibility Checklist Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 0,
+ "issingle": 0,
+ "is_submittable": 0,
+ "links": [],
+ "modified": "2026-09-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Client Eligibility Criteria",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Insurance Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Claims Adjuster",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance Agent",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Compliance Officer",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "search_fields": "criteria_name,criteria_code",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "criteria_name",
+ "track_changes": 1
+}

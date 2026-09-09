@@ -1,4 +1,4 @@
-# Insurance Management App – Overview & Features
+# Insurance Core – Overview & Features
 
 ## Core Modules
 1. **Insurance Provider** – Master data for insurers, TPAs, brokers
@@ -65,7 +65,7 @@
 
 ## App Structure
 ```
-insurance/                          # Frappe app / git root
+insurance_core/                     # Frappe app / git root
 ├── pyproject.toml
 ├── license.txt
 ├── README.md
@@ -74,15 +74,15 @@ insurance/                          # Frappe app / git root
 │   ├── vite.config.js
 │   ├── tailwind.config.js
 │   └── src/
-├── insurance/                      # Python package
+├── insurance_core/                 # Python package
 │   ├── hooks.py
 │   ├── modules.txt
 │   ├── api.py
 │   ├── public/
 │   │   ├── images/insurance.svg
 │   │   └── frontend/               # Vite build output
-│   ├── www/insurance.html          # SPA shell at /insurance
-│   └── insurance/doctype/
+│   ├── www/insurance_core.html     # SPA shell at /insurance_core
+│   └── insurance_core/doctype/
 └── specs/
 ```
 
@@ -119,11 +119,11 @@ Create **Insurance Settings** (Single) with:
 
 ## Installation
 
-This repository is a Frappe app. Place it under `frappe-bench/apps/insurance`, then:
+This repository is a Frappe app. Place it under `frappe-bench/apps/insurance_core`, then:
 
 ```bash
 # Install the app on a site
-bench --site <site> install-app insurance
+bench --site <site> install-app insurance_core
 
 # Build the Vue SPA (from the app root)
 cd frontend
@@ -138,7 +138,7 @@ cd frontend
 yarn dev
 ```
 
-SPA route: `/insurance`. Built assets: `/assets/insurance/frontend/`.
+SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 
 
 

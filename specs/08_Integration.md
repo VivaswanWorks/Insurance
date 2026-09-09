@@ -38,10 +38,10 @@ This document instructs coding agents how to integrate the Insurance Management 
 # hooks.py
 doc_events = {
     "Insurance Policy": {
-        "on_submit": "insurance.integrations.erpnext.create_accounting_entries",
+        "on_submit": "insurance_core.integrations.erpnext.create_accounting_entries",
     },
     "Insurance Claim": {
-        "on_update_after_submit": "insurance.integrations.erpnext.handle_claim_settlement",
+        "on_update_after_submit": "insurance_core.integrations.erpnext.handle_claim_settlement",
     }
 }
 ```
@@ -152,7 +152,7 @@ In `hooks.py` or a setup wizard:
 ```python
 # Optional integrations
 app_include_js = ...
-after_install = "insurance.setup.after_install"
+after_install = "insurance_core.install.after_install"
 
 def after_install():
     if "erpnext" in frappe.get_installed_apps():

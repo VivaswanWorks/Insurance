@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "CMP-.YYYY.-.#####",
+ "creation": "2026-09-04 06:00:00",
+ "default_view": "List",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "record_id",
+  "title",
+  "regulation",
+  "entity_type",
+  "entity",
+  "status",
+  "due_date",
+  "owner_user",
+  "documents",
+  "notes",
+  "checklist",
+  "attachment",
+  "closed_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "record_id",
+   "fieldtype": "Data",
+   "label": "Record ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1,
+   "width": 130
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_global_search": 1,
+   "width": 220
+  },
+  {
+   "fieldname": "regulation",
+   "fieldtype": "Select",
+   "label": "Regulation",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "in_global_search": 1,
+   "options": "IRDAI\nNAIC\nFCA\nGDPR\nAML/KYC\nSolvency II\nLocal Statute",
+   "width": 140
+  },
+  {
+   "fieldname": "entity_type",
+   "fieldtype": "Select",
+   "label": "Entity Type",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "Insurance Provider\nInsurance Scheme\nInsurance Policy\nInsurance Client",
+   "width": 140
+  },
+  {
+   "fieldname": "entity",
+   "fieldtype": "Data",
+   "label": "Entity",
+   "in_list_view": 1,
+   "in_global_search": 1,
+   "width": 160
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "default": "Open",
+   "options": "Open\nIn Progress\nSubmitted\nApproved\nOverdue\nClosed",
+   "width": 120
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date",
+   "reqd": 1,
+   "in_list_view": 1,
+   "width": 120
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Data",
+   "label": "Owner"
+  },
+  {
+   "fieldname": "documents",
+   "fieldtype": "Small Text",
+   "label": "Required Documents"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "checklist",
+   "fieldtype": "Table",
+   "label": "Checklist",
+   "options": "Compliance Checklist Item"
+  },
+  {
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment"
+  },
+  {
+   "fieldname": "closed_on",
+   "fieldtype": "Date",
+   "label": "Closed On"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 0,
+ "links": [],
+ "modified": "2026-09-06 12:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Compliance Record",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Insurance Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance Agent",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Claims Adjuster",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Compliance Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "search_fields": "title, regulation, entity",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

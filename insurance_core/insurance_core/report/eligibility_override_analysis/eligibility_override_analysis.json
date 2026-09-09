@@ -1,0 +1,27 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2026-09-07 00:00:00",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2026-09-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Eligibility Override Analysis",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Claim Eligibility Evaluation",
+ "report_name": "Eligibility Override Analysis",
+ "report_type": "Query Report",
+ "roles": [
+  {"role": "Insurance Manager"},
+  {"role": "Claims Adjuster"},
+  {"role": "System Manager"}
+ ],
+ "query": "select\n\te.insurance_claim,\n\te.insurance_policy,\n\te.overall_score,\n\te.overall_status,\n\te.overridden_by,\n\te.override_reason,\n\te.evaluation_datetime,\n\tcl.status as claim_status,\n\tcl.decision\nfrom `tabClaim Eligibility Evaluation` e\nleft join `tabInsurance Claim` cl on cl.name = e.insurance_claim\nwhere e.overridden_by is not null and e.overridden_by != ''\norder by e.evaluation_datetime desc"
+}

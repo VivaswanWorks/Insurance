@@ -9,7 +9,7 @@ const routes = [
 ]
 
 let router = createRouter({
-  history: createWebHistory('/insurance'),
+  history: createWebHistory('/insurance_core'),
   routes,
 })
 

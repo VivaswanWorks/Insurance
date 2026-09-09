@@ -1,0 +1,177 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "creation": "2026-09-07 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "eligibility_criteria",
+  "criteria_code",
+  "criteria_version",
+  "is_mandatory",
+  "weightage",
+  "result",
+  "score_contribution",
+  "remarks",
+  "evidence"
+ ],
+ "fields": [
+  {
+   "fieldname": "eligibility_criteria",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Eligibility Criteria",
+   "options": "Client Eligibility Criteria",
+   "reqd": 1
+  },
+  {
+   "fieldname": "criteria_code",
+   "fieldtype": "Data",
+   "label": "Criteria Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "criteria_version",
+   "fieldtype": "Int",
+   "label": "Criteria Version",
+   "read_only": 1
+  },
+  {
+   "fieldname": "is_mandatory",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Was Mandatory",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weightage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Weightage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "result",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Result",
+   "options": "Pass\nFail\nSkipped\nError",
+   "read_only": 1
+  },
+  {
+   "fieldname": "score_contribution",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Score Contribution",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks / Failure Reason"
+  },
+  {
+   "fieldname": "evidence",
+   "fieldtype": "Attach",
+   "label": "Evidence Attachment"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "issingle": 0,
+ "is_submittable": 0,
+ "links": [],
+ "modified": "2026-09-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Claim Eligibility Result",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Insurance Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance Agent",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Claims Adjuster",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Compliance Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

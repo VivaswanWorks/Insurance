@@ -1,0 +1,220 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "COM-.#####",
+ "creation": "2026-09-04 06:00:00",
+ "default_view": "List",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "comm_id",
+  "subject",
+  "channel",
+  "template",
+  "recipient",
+  "related_doctype",
+  "related_name",
+  "scheduled_at",
+  "status",
+  "agent",
+  "body",
+  "client"
+ ],
+ "fields": [
+  {
+   "fieldname": "comm_id",
+   "fieldtype": "Data",
+   "label": "Communication ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "bold": 1,
+   "width": 110
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_global_search": 1,
+   "width": 240
+  },
+  {
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "label": "Channel",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "default": "Email",
+   "options": "Email\nSMS\nWhatsApp\nIn-App\nPush",
+   "width": 100
+  },
+  {
+   "fieldname": "template",
+   "fieldtype": "Select",
+   "label": "Template",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "in_global_search": 1,
+   "options": "Renewal Reminder\nPremium Due\nPremium Overdue\nClaim Update\nKYC Follow-up\nWelcome\nPolicy Milestone\nPolicy Issued\nPolicy Expiring\nPolicy Renewed\nPolicy Lapsed\nClaim Submitted\nClaim Info Required\nClaim Approved\nClaim Rejected\nClaim Settled\nGrievance Acknowledgement",
+   "width": 160
+  },
+  {
+   "fieldname": "recipient",
+   "fieldtype": "Data",
+   "label": "Recipient",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_global_search": 1,
+   "width": 180
+  },
+  {
+   "fieldname": "related_doctype",
+   "fieldtype": "Data",
+   "label": "Related Doctype"
+  },
+  {
+   "fieldname": "related_name",
+   "fieldtype": "Data",
+   "label": "Related Record"
+  },
+  {
+   "fieldname": "scheduled_at",
+   "fieldtype": "Datetime",
+   "label": "Scheduled At",
+   "in_list_view": 1,
+   "width": 150
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "default": "Draft",
+   "options": "Draft\nQueued\nSent\nFailed\nCancelled",
+   "width": 110
+  },
+  {
+   "fieldname": "agent",
+   "fieldtype": "Data",
+   "label": "Agent"
+  },
+  {
+   "fieldname": "body",
+   "fieldtype": "Text Editor",
+   "label": "Message Body"
+  },
+  {
+   "fieldname": "client",
+   "fieldtype": "Link",
+   "label": "Client",
+   "options": "Insurance Client"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 0,
+ "links": [],
+ "modified": "2026-09-06 12:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Insurance Communication",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Insurance Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance Agent",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 1,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Claims Adjuster",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 1,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Compliance Officer",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 1,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "search_fields": "subject, recipient, template",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "subject",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

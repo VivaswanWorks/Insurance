@@ -1,9 +1,9 @@
 [project]
-name = "insurance"
+name = "insurance_core"
 authors = [
     { name = "VivaswanWorks", email = "hello@Vivaswan.in" }
 ]
-description = "Insurance ERP on Frappe — providers, schemes, policies, claims, compliance"
+description = "Core Insurance Management for Frappe / ERPNext"
 requires-python = ">=3.10"
 readme = "README.md"
 license = { file = "license.txt" }
@@ -15,7 +15,7 @@ requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
-name = "insurance"
+name = "insurance_core"
 
 [tool.bench.dev-dependencies]
 

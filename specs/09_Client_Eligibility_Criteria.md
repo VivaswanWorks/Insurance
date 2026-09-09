@@ -150,7 +150,7 @@ Agents should create these as fixtures or via setup wizard (all Active, appropri
 # on Insurance Claim
 def validate(self):
     if self.is_new() or self.has_value_changed("claimed_amount") or ...:
-        from insurance_management.eligibility import evaluate_claim_eligibility
+        from insurance_core.eligibility import evaluate_claim_eligibility
         result = evaluate_claim_eligibility(self)
         if not result.can_submit and not self.flags.ignore_eligibility:
             frappe.throw(...)
@@ -192,9 +192,9 @@ Add to **Insurance Settings** (Single):
 ---
 
 ## API Methods
-- `insurance_management.eligibility.evaluate_claim_eligibility(claim_name)`
-- `insurance_management.eligibility.get_applicable_criteria(scheme, claim_type)`
-- `insurance_management.eligibility.recalculate_score(claim_name)`
+- `insurance_core.eligibility.evaluate_claim_eligibility(claim_name)`
+- `insurance_core.eligibility.get_applicable_criteria(scheme, claim_type)`
+- `insurance_core.eligibility.recalculate_score(claim_name)`
 
 ---
 

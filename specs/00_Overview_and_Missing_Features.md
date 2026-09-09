@@ -65,8 +65,8 @@
 
 ## Suggested App Structure
 ```
-insurance/
-├── insurance/
+insurance_core/
+├── insurance_core/
 │   ├── doctype/
 │   │   ├── insurance_provider/
 │   │   ├── insurance_scheme/

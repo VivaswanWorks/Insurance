@@ -1,0 +1,199 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "creation": "2026-09-06 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "scheme",
+  "policy",
+  "quotation",
+  "age",
+  "sum_insured",
+  "members",
+  "net_premium",
+  "tax_amount",
+  "total_premium",
+  "breakdown",
+  "calculated_by",
+  "calculated_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "scheme",
+   "fieldtype": "Link",
+   "label": "Scheme",
+   "options": "Insurance Scheme",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "policy",
+   "fieldtype": "Link",
+   "label": "Policy",
+   "options": "Insurance Policy"
+  },
+  {
+   "fieldname": "quotation",
+   "fieldtype": "Link",
+   "label": "Quotation",
+   "options": "Insurance Quotation"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sum_insured",
+   "fieldtype": "Currency",
+   "label": "Sum Insured",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "members",
+   "fieldtype": "Int",
+   "label": "Members"
+  },
+  {
+   "fieldname": "net_premium",
+   "fieldtype": "Currency",
+   "label": "Net Premium",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "tax_amount",
+   "fieldtype": "Currency",
+   "label": "Tax Amount"
+  },
+  {
+   "fieldname": "total_premium",
+   "fieldtype": "Currency",
+   "label": "Total Premium",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "breakdown",
+   "fieldtype": "Small Text",
+   "label": "Breakdown"
+  },
+  {
+   "fieldname": "calculated_by",
+   "fieldtype": "Link",
+   "label": "Calculated By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "calculated_at",
+   "fieldtype": "Datetime",
+   "label": "Calculated At",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 0,
+ "issingle": 0,
+ "is_submittable": 0,
+ "links": [],
+ "modified": "2026-09-06 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Insurance Core",
+ "name": "Premium Calculation Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Insurance Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance Agent",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Claims Adjuster",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 0,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Compliance Officer",
+   "read": 1,
+   "write": 1,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Insurance User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 0,
+   "import": 0,
+   "share": 0,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "autoname": "PCL-.#####",
+ "naming_rule": "By \"Naming Series\" field",
+ "title_field": "scheme",
+ "search_fields": "scheme, policy",
+ "show_name_in_global_search": 1,
+ "default_view": "List"
+}

@@ -46,8 +46,8 @@ Extend with:
 3. **Custom Scheduler** (`hooks.py` → `scheduler_events`):
    ```python
    "daily": [
-       "insurance.insurance.doctype.insurance_policy.insurance_policy.send_expiry_reminders",
-       "insurance.insurance.doctype.insurance_policy.insurance_policy.send_premium_reminders"
+       "insurance_core.insurance_core.doctype.insurance_policy.insurance_policy.send_expiry_reminders",
+       "insurance_core.insurance_core.doctype.insurance_policy.insurance_policy.send_premium_reminders"
    ]
    ```
 4. **WhatsApp Integration**:
