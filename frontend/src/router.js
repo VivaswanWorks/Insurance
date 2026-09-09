@@ -26,6 +26,11 @@ const routes = [
     name: 'ClaimNew',
     component: () => import('@/pages/ClaimNew.vue'),
   },
+  {
+    path: '/claims/:name',
+    name: 'ClaimDetail',
+    component: () => import('@/pages/ClaimDetail.vue'),
+  },
 ]
 
 let router = createRouter({
