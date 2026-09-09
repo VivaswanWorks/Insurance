@@ -8,6 +8,7 @@ class InsuranceClaim(Document):
 	def validate(self):
 		self.set_missing_values()
 		self.validate_amounts()
+		self.validate_cashless()
 		self.stamp_documents()
 		self.evaluate_eligibility()
 
@@ -31,6 +32,26 @@ class InsuranceClaim(Document):
 			self.settled_amount = self.approved_amount or self.claimed_amount
 		if self.status == "Settled" and not self.settlement_date:
 			self.settlement_date = nowdate()
+		# TPA routing for cashless
+		if (self.claim_type or "") == "Cashless" and self.meta.has_field("tpa") and not self.get("tpa"):
+			try:
+				from insurance_core.cashless import resolve_tpa
+
+				self.tpa = resolve_tpa(self)
+			except Exception:
+				pass
+
+	def validate_cashless(self):
+		if (self.claim_type or "") != "Cashless":
+			return
+		if self.status in (None, "Draft"):
+			return
+		try:
+			from insurance_core.cashless import validate_cashless_hospital
+
+			validate_cashless_hospital(self.hospital, throw=True)
+		except ImportError:
+			pass
 
 	def stamp_documents(self):
 		for row in self.get("claim_documents") or []:
@@ -50,13 +71,15 @@ class InsuranceClaim(Document):
 				),
 				title=_("Amount Exceeds Coverage"),
 			)
-		paid = flt(frappe.db.sql(
-			"""
-			select coalesce(sum(settled_amount), 0) from `tabInsurance Claim`
-			where policy = %s and name != %s and status in ('Settled', 'Approved', 'Partially Approved')
-			""",
-			(self.policy, self.name or ""),
-		)[0][0])
+		paid = flt(
+			frappe.db.sql(
+				"""
+				select coalesce(sum(settled_amount), 0) from `tabInsurance Claim`
+				where policy = %s and name != %s and status in ('Settled', 'Approved', 'Partially Approved')
+				""",
+				(self.policy, self.name or ""),
+			)[0][0]
+		)
 		remaining = sum_assured - paid
 		if sum_assured and flt(self.claimed_amount) > remaining and remaining >= 0:
 			frappe.msgprint(
@@ -91,9 +114,41 @@ class InsuranceClaim(Document):
 	def on_update(self):
 		self.log_status_change()
 		self.sync_policy_status()
+		self.maybe_create_cashless_auth()
+		self.maybe_create_reinsurance_recovery()
 		self.notify_status()
 		if hasattr(self, "sync_linked_apps"):
 			self.sync_linked_apps()
+
+	def maybe_create_cashless_auth(self):
+		if (self.claim_type or "") != "Cashless":
+			return
+		if self.status not in ("Submitted", "Under Review"):
+			return
+		prev = self.get_doc_before_save()
+		if prev and prev.status == self.status and self.get("cashless_authorization"):
+			return
+		try:
+			from insurance_core.cashless import ensure_cashless_authorization
+
+			name = ensure_cashless_authorization(self)
+			if name and self.meta.has_field("cashless_authorization") and not self.get("cashless_authorization"):
+				self.db_set("cashless_authorization", name, update_modified=False)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Cashless Authorization Create")
+
+	def maybe_create_reinsurance_recovery(self):
+		if self.status not in ("Settled", "Approved", "Partially Approved"):
+			return
+		prev = self.get_doc_before_save()
+		if prev and prev.status == self.status and flt(self.reinsurance_recovery):
+			return
+		try:
+			from insurance_core.reinsurance import ensure_reinsurance_recovery
+
+			ensure_reinsurance_recovery(self)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Reinsurance Recovery Create")
 
 	def after_insert(self):
 		self.apply_checklist_template()
@@ -141,15 +196,17 @@ class InsuranceClaim(Document):
 		prev = self.get_doc_before_save()
 		if not prev or prev.status == self.status:
 			return
-		frappe.get_doc({
-			"doctype": "Claim Assessment Log",
-			"claim": self.name,
-			"from_status": prev.status,
-			"to_status": self.status,
-			"comment": self.remarks or self.assessment_notes,
-			"user": frappe.session.user,
-			"logged_at": now_datetime(),
-		}).insert(ignore_permissions=True)
+		frappe.get_doc(
+			{
+				"doctype": "Claim Assessment Log",
+				"claim": self.name,
+				"from_status": prev.status,
+				"to_status": self.status,
+				"comment": self.remarks or self.assessment_notes,
+				"user": frappe.session.user,
+				"logged_at": now_datetime(),
+			}
+		).insert(ignore_permissions=True)
 
 	def sync_policy_status(self):
 		if not self.policy:
@@ -161,7 +218,11 @@ class InsuranceClaim(Document):
 		if self.status == "Settled":
 			open_claims = frappe.db.count(
 				"Insurance Claim",
-				{"policy": self.policy, "name": ["!=", self.name], "status": ["not in", ["Settled", "Closed", "Rejected"]]},
+				{
+					"policy": self.policy,
+					"name": ["!=", self.name],
+					"status": ["not in", ["Settled", "Closed", "Rejected"]],
+				},
 			)
 			if not open_claims:
 				frappe.db.set_value("Insurance Policy", self.policy, "status", "Settled")
