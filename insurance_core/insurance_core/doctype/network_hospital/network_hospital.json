@@ -9,11 +9,15 @@
  "field_order": [
   "hospital_name",
   "provider",
+  "tpa",
   "city",
   "address",
   "phone",
   "cashless",
   "status",
+  "empanelment_from",
+  "empanelment_to",
+  "specialties",
   "notes"
  ],
  "fields": [
@@ -28,10 +32,19 @@
   {
    "fieldname": "provider",
    "fieldtype": "Link",
-   "label": "TPA / Provider",
+   "label": "Insurer / Provider",
    "options": "Insurance Provider",
    "in_list_view": 1,
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "tpa",
+   "fieldtype": "Link",
+   "label": "TPA",
+   "options": "Insurance Provider",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Third Party Administrator handling cashless for this hospital"
   },
   {
    "fieldname": "city",
@@ -68,6 +81,21 @@
    "in_standard_filter": 1
   },
   {
+   "fieldname": "empanelment_from",
+   "fieldtype": "Date",
+   "label": "Empanelment From"
+  },
+  {
+   "fieldname": "empanelment_to",
+   "fieldtype": "Date",
+   "label": "Empanelment To"
+  },
+  {
+   "fieldname": "specialties",
+   "fieldtype": "Small Text",
+   "label": "Specialties"
+  },
+  {
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
@@ -77,8 +105,14 @@
  "istable": 0,
  "issingle": 0,
  "is_submittable": 0,
- "links": [],
- "modified": "2026-09-06 00:00:00",
+ "links": [
+  {
+   "link_doctype": "Cashless Authorization",
+   "link_fieldname": "hospital",
+   "group": "Cashless"
+  }
+ ],
+ "modified": "2026-09-09 00:00:00",
  "modified_by": "Administrator",
  "module": "Insurance Core",
  "name": "Network Hospital",
