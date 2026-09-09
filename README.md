@@ -28,9 +28,12 @@
 - Desk buttons: Approve, Reject, Apply, Estimate Premium Impact
 - Portal: clients can request endorsements from policy detail
 
-### D. Reinsurance (Basic)
-- Facultative / Treaty tagging on policies
-- Cession percentage and recovery tracking on claims
+### D. Reinsurance
+- **Reinsurance Treaty** master (code, type Treaty/Facultative, reinsurer, default cession %, retention limit, validity)
+- Policy fields: reinsurance type, treaty link, reinsurer, cession %
+- Selecting a treaty copies type / % / reinsurer when empty
+- On claim Approve / Settle: auto **Claim Recovery** (type Reinsurance) for the cession share
+- Desk: Preview Cession, Create Recovery on Insurance Claim
 
 ### E. Commission & Agency Management
 - **Commission Rule** (scheme / provider / event + rate and/or fixed amount)
@@ -40,10 +43,13 @@
   - Positive premium impact on applied endorsements
 - Approve → Mark Paid workflow; Agent Commission summary API
 
-### F. TPA / Network Hospital Management
-- Preferred provider network
-- Cashless authorization workflow
-- TPA-wise claim routing
+### F. TPA / Cashless / Network Hospital
+- **Network Hospital** with TPA link, cashless flag, empanelment dates, specialties
+- **Cashless Authorization** workflow: Requested → Under Review / Query → Approved / Rejected → Utilized
+- Cashless claims require an active cashless network hospital
+- Auto TPA resolution from hospital (or provider type TPA)
+- Auto-create authorization when cashless claim is Submitted
+- Desk buttons on claim: Request / Open Authorization; on authorization: Approve / Reject / Mark Utilized
 
 ### G. Document Generation
 - Jinja templates under `insurance_core/templates/print_formats/`:
@@ -67,8 +73,10 @@
 This repository is a Frappe app. Place it under `frappe-bench/apps/insurance_core`, then:
 
 ```bash
-# Install the app on a site
+# Install / migrate the app on a site
 bench --site <site> install-app insurance_core
+# or after pull:
+bench --site <site> migrate
 
 # Build the Vue SPA (from the app root)
 cd frontend
@@ -98,6 +106,19 @@ SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 3. When policy status becomes **Active**, a **Commission Payout** is accrued (Issue/Renewal).
 4. When `payment_status` becomes **Paid**, a Collection payout is accrued.
 5. Approve and Mark Paid from the payout form.
+
+### Reinsurance
+1. Create **Insurance Provider** with type Reinsurer (optional).
+2. Create **Reinsurance Treaty** (cession %, reinsurer, Active).
+3. On large policies set **Reinsurance Type**, **Treaty**, and/or **Cession %**.
+4. On claim settlement, a **Claim Recovery** (Reinsurance) is created automatically.
+5. Use claim buttons **Preview Cession** / **Create Recovery** as needed.
+
+### Cashless / TPA
+1. Maintain **Network Hospital** rows (cashless enabled, linked TPA).
+2. Create claim with type **Cashless** and select the hospital.
+3. On Submit, a **Cashless Authorization** is created and TPA is resolved.
+4. Approve authorization (sets auth code + approved amount), then **Mark Utilized** after treatment.
 
 ### Print formats
 ```python
