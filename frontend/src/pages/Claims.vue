@@ -12,15 +12,16 @@
       <div
         v-for="c in $resources.claims.data || []"
         :key="c.name"
-        class="p-4 flex flex-wrap gap-3 justify-between items-center">
+        class="p-4 flex flex-wrap gap-3 justify-between items-center hover:bg-gray-50 cursor-pointer"
+        @click="$router.push(`/claims/${c.name}`)">
         <div>
           <div class="font-medium">{{ c.claim_number }}</div>
           <div class="text-sm text-gray-500">
-            {{ c.claim_type }} · {{ c.incident_date }} · claimed {{ c.claimed_amount }}
-            <span v-if="c.approved_amount"> · approved {{ c.approved_amount }}</span>
+            {{ c.claim_type }} · {{ c.incident_date }} · claimed {{ formatCurrency(c.claimed_amount) }}
+            <span v-if="c.approved_amount"> · approved {{ formatCurrency(c.approved_amount) }}</span>
           </div>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" @click.stop>
           <span class="text-xs px-2 py-1 rounded-full bg-gray-100">{{ c.status }}</span>
           <Button
             v-if="['Settled', 'Approved', 'Partially Approved'].includes(c.status)"
@@ -47,6 +48,16 @@ export default {
     },
   },
   methods: {
+    formatCurrency(value) {
+      if (value == null || value === '') return value
+      const n = Number(value)
+      if (Number.isNaN(n)) return value
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0,
+      }).format(n)
+    },
     async downloadSettlement(claim) {
       try {
         const html = await this.$resources.print.fetch({ claim, settlement: 1 })
