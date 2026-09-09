@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>{{ _("Claim Form") }} – {{ claim.claim_number }}</title>
+	<style>
+		body { font-family: system-ui, sans-serif; font-size: 12px; color: #222; margin: 24px; }
+		h1 { font-size: 20px; }
+		h2 { font-size: 14px; margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+		.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+		.label { color: #666; font-size: 11px; }
+		.value { font-weight: 600; }
+		table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+		th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+		th { background: #f5f5f5; }
+	</style>
+</head>
+<body>
+	<h1>{{ _("Insurance Claim Form") }}</h1>
+
+	<div class="grid-2">
+		<div><div class="label">{{ _("Claim Number") }}</div><div class="value">{{ claim.claim_number }}</div></div>
+		<div><div class="label">{{ _("Status") }}</div><div class="value">{{ claim.status }}</div></div>
+		<div><div class="label">{{ _("Policy") }}</div><div class="value">{% if policy %}{{ policy.policy_number }}{% else %}{{ claim.policy }}{% endif %}</div></div>
+		<div><div class="label">{{ _("Claimant") }}</div><div class="value">{{ claim.claimant or (client.full_name if client else "") }}</div></div>
+		<div><div class="label">{{ _("Claim Type") }}</div><div class="value">{{ claim.claim_type }}</div></div>
+		<div><div class="label">{{ _("Incident Date") }}</div><div class="value">{{ formatdate(claim.incident_date) }}</div></div>
+		<div><div class="label">{{ _("Claimed Amount") }}</div><div class="value">{{ fmt_money(claim.claimed_amount) }}</div></div>
+		<div><div class="label">{{ _("Approved Amount") }}</div><div class="value">{{ fmt_money(claim.approved_amount) if claim.approved_amount else "—" }}</div></div>
+	</div>
+
+	{% if claim.description %}
+	<h2>{{ _("Incident Description") }}</h2>
+	<div>{{ claim.description }}</div>
+	{% endif %}
+
+	{% if claim.hospital or claim.diagnosis %}
+	<h2>{{ _("Hospital / Treatment") }}</h2>
+	<div class="grid-2">
+		<div><div class="label">{{ _("Hospital") }}</div><div class="value">{{ claim.hospital or "" }}</div></div>
+		<div><div class="label">{{ _("Diagnosis") }}</div><div class="value">{{ claim.diagnosis or "" }}</div></div>
+		<div><div class="label">{{ _("Admission") }}</div><div class="value">{{ formatdate(claim.admission_date) if claim.admission_date else "" }}</div></div>
+		<div><div class="label">{{ _("Discharge") }}</div><div class="value">{{ formatdate(claim.discharge_date) if claim.discharge_date else "" }}</div></div>
+	</div>
+	{% endif %}
+
+	{% if documents %}
+	<h2>{{ _("Supporting Documents") }}</h2>
+	<table>
+		<thead><tr><th>{{ _("Type") }}</th><th>{{ _("Attachment") }}</th></tr></thead>
+		<tbody>
+			{% for d in documents %}
+			<tr><td>{{ d.document_type or "" }}</td><td>{{ d.attachment or "" }}</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endif %}
+</body>
+</html>
