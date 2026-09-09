@@ -89,6 +89,12 @@ export default {
       },
       auto: true,
     },
+    submitEndorsement: {
+      url: 'insurance_core.portal.portal_request_endorsement',
+    },
+    print: {
+      url: 'insurance_core.portal.portal_policy_print',
+    },
   },
   methods: {
     async submitEndorsement() {
@@ -101,7 +107,7 @@ export default {
           new_value: this.endorsement.new_value,
         })
         this.showEndorsement = false
-        this.$toast?.success?.('Endorsement submitted') || alert('Endorsement submitted')
+        alert('Endorsement submitted')
       } finally {
         this.submitting = false
       }
@@ -118,21 +124,6 @@ export default {
       } finally {
         this.printing = false
       }
-    },
-  },
-  resources: {
-    detail: {
-      url: 'insurance_core.portal.portal_get_policy',
-      makeParams() {
-        return { policy: this.$route.params.name }
-      },
-      auto: true,
-    },
-    submitEndorsement: {
-      url: 'insurance_core.portal.portal_request_endorsement',
-    },
-    print: {
-      url: 'insurance_core.portal.portal_policy_print',
     },
   },
 }
