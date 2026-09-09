@@ -69,12 +69,28 @@ class InsurancePolicy(Document):
 			return
 		from insurance_core.eligibility import evaluate_policy_eligibility
 
-		evaluate_policy_eligibility(self, throw=self.status == "Active" and (self.is_new() or self.has_value_changed("status")))
+		evaluate_policy_eligibility(
+			self, throw=self.status == "Active" and (self.is_new() or self.has_value_changed("status"))
+		)
 
 	def on_update(self):
 		self.sync_client_stage()
+		self.maybe_accrue_commission()
 		if hasattr(self, "sync_linked_apps"):
 			self.sync_linked_apps()
+
+	def maybe_accrue_commission(self):
+		if self.status != "Active":
+			return
+		if not (self.is_new() or self.has_value_changed("status")):
+			return
+		try:
+			from insurance_core.commission import accrue_commission
+
+			event = "Renewal" if self.policy_type == "Renewal" else "Issue"
+			accrue_commission(self, event=event)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Policy Commission Accrual")
 
 	def after_insert(self):
 		self.copy_scheme_coverages()
@@ -87,14 +103,17 @@ class InsurancePolicy(Document):
 			return
 		scheme = frappe.get_doc("Insurance Scheme", self.scheme)
 		for row in scheme.get("coverage_details") or []:
-			self.append("policy_coverages", {
-				"coverage_name": row.coverage_name,
-				"description": row.description,
-				"is_mandatory": row.is_mandatory,
-				"max_limit": row.max_limit,
-				"percentage": row.percentage,
-				"notes": row.notes,
-			})
+			self.append(
+				"policy_coverages",
+				{
+					"coverage_name": row.coverage_name,
+					"description": row.description,
+					"is_mandatory": row.is_mandatory,
+					"max_limit": row.max_limit,
+					"percentage": row.percentage,
+					"notes": row.notes,
+				},
+			)
 		if self.get("policy_coverages"):
 			self.db_update()
 			self.update_child_table("policy_coverages")
@@ -112,10 +131,7 @@ class InsurancePolicy(Document):
 		for name in templates:
 			tmpl = frappe.get_doc("Compliance Checklist Template", name)
 			for item in tmpl.get("items") or []:
-				self.append("compliance_checklist", {
-					"item": item.item,
-					"completed": 0,
-				})
+				self.append("compliance_checklist", {"item": item.item, "completed": 0})
 		if self.get("compliance_checklist"):
 			self.db_update()
 			self.update_child_table("compliance_checklist")
@@ -210,7 +226,11 @@ def send_premium_reminders():
 	today = getdate(nowdate())
 	due = frappe.get_all(
 		"Insurance Policy",
-		filters={"status": ["in", ["Active", "Grace Period"]], "next_premium_due": today, "payment_status": ["!=", "Paid"]},
+		filters={
+			"status": ["in", ["Active", "Grace Period"]],
+			"next_premium_due": today,
+			"payment_status": ["!=", "Paid"],
+		},
 		fields=["name", "client", "agent", "policy_number", "next_premium_due"],
 	)
 	for p in due:
@@ -225,7 +245,11 @@ def send_premium_reminders():
 		)
 	overdue = frappe.get_all(
 		"Insurance Policy",
-		filters={"status": ["in", ["Active", "Grace Period"]], "next_premium_due": ["<", today], "payment_status": ["!=", "Paid"]},
+		filters={
+			"status": ["in", ["Active", "Grace Period"]],
+			"next_premium_due": ["<", today],
+			"payment_status": ["!=", "Paid"],
+		},
 		fields=["name", "client", "agent", "policy_number", "next_premium_due"],
 	)
 	for p in overdue:
