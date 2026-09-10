@@ -12,6 +12,7 @@
   "claim_number",
   "policy_source",
   "policy",
+  "external_policy_number",
   "client",
   "provider",
   "scheme",
@@ -87,7 +88,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Internal: policies sold by our firm (auto-fills from Policy). External: policies sold by others; blank form for manual entry."
+   "description": "Internal: policies sold by our firm (auto-fills from Policy). External: policies sold by others; enter External Policy Number and fill form manually."
   },
   {
    "fieldname": "policy",
@@ -98,8 +99,19 @@
    "in_global_search": 1,
    "options": "Insurance Policy",
    "width": 140,
+   "depends_on": "eval:doc.policy_source=='Internal'",
    "mandatory_depends_on": "eval:doc.policy_source=='Internal'",
-   "description": "Required for Internal. Optional for External."
+   "description": "Required for Internal. Auto-fills client, scheme, provider, agent."
+  },
+  {
+   "fieldname": "external_policy_number",
+   "fieldtype": "Data",
+   "label": "External Policy Number",
+   "in_list_view": 1,
+   "in_global_search": 1,
+   "depends_on": "eval:doc.policy_source=='External'",
+   "mandatory_depends_on": "eval:doc.policy_source=='External'",
+   "description": "Policy number from the external insurer (required for External claims)."
   },
   {
    "fieldname": "client",
@@ -437,7 +449,7 @@
    "group": "Eligibility"
   }
  ],
- "modified": "2026-09-10 14:55:00",
+ "modified": "2026-09-10 15:15:00",
  "modified_by": "Administrator",
  "module": "Insurance Core",
  "name": "Insurance Claim",
@@ -525,7 +537,7 @@
    "email": 1
   }
  ],
- "search_fields": "claim_number, policy, client",
+ "search_fields": "claim_number, policy, external_policy_number, client",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
