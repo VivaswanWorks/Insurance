@@ -80,7 +80,7 @@ def ensure_cashless_authorization(claim, requested_amount=None):
 	if isinstance(claim, str):
 		claim = frappe.get_doc("Insurance Claim", claim)
 
-if (claim.claim_type or "") != "Cashless":
+	if (claim.claim_type or "") != "Cashless":
 		return None
 	if not frappe.db.exists("DocType", "Cashless Authorization"):
 		return None
