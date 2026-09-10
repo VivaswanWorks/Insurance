@@ -7,23 +7,30 @@ from frappe.utils import flt, now_datetime, nowdate
 class InsuranceClaim(Document):
 	def validate(self):
 		self.set_missing_values()
+		self.validate_policy_source()
 		self.validate_amounts()
 		self.validate_cashless()
 		self.stamp_documents()
 		self.evaluate_eligibility()
 
+	def is_internal_policy(self):
+		return (self.policy_source or "Internal") == "Internal"
+
 	def set_missing_values(self):
-		if self.policy:
+		# Only auto-fill from Insurance Policy when source is Internal
+		if self.is_internal_policy() and self.policy:
 			pol = frappe.db.get_value(
 				"Insurance Policy",
 				self.policy,
-				["client", "scheme", "provider"],
+				["client", "scheme", "provider", "agent"],
 				as_dict=True,
 			)
 			if pol:
 				self.client = self.client or pol.client
 				self.scheme = self.scheme or pol.scheme
 				self.provider = self.provider or pol.provider
+				if self.meta.has_field("agent") and not self.agent and pol.get("agent"):
+					self.agent = pol.agent
 		if not self.reported_date:
 			self.reported_date = self.submission_date or nowdate()
 		if self.status in ("Approved", "Partially Approved") and not self.approved_amount:
@@ -40,6 +47,13 @@ class InsuranceClaim(Document):
 				self.tpa = resolve_tpa(self)
 			except Exception:
 				pass
+
+	def validate_policy_source(self):
+		if self.is_internal_policy() and not self.policy:
+			frappe.throw(
+				_("Policy is required when Policy Source is Internal."),
+				title=_("Missing Policy"),
+			)
 
 	def validate_cashless(self):
 		if (self.claim_type or "") != "Cashless":
@@ -61,7 +75,8 @@ class InsuranceClaim(Document):
 				row.uploaded_by = frappe.session.user
 
 	def validate_amounts(self):
-		if not self.policy or not self.claimed_amount:
+		# Sum-assured checks only apply to internal policies we manage
+		if not self.is_internal_policy() or not self.policy or not self.claimed_amount:
 			return
 		sum_assured = flt(frappe.db.get_value("Insurance Policy", self.policy, "sum_assured"))
 		if sum_assured and flt(self.claimed_amount) > sum_assured:
@@ -209,7 +224,8 @@ class InsuranceClaim(Document):
 		).insert(ignore_permissions=True)
 
 	def sync_policy_status(self):
-		if not self.policy:
+		# Only sync status on internal policies we own
+		if not self.is_internal_policy() or not self.policy:
 			return
 		if self.status in ("Submitted", "Under Review", "Documents Pending", "Additional Info Required"):
 			current = frappe.db.get_value("Insurance Policy", self.policy, "status")
