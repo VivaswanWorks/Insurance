@@ -10,12 +10,12 @@
  "engine": "InnoDB",
  "field_order": [
   "claim_number",
+  "policy_source",
   "policy",
   "client",
   "provider",
   "scheme",
   "claim_type",
-  "policy_source",
   "incident_date",
   "submission_date",
   "claimed_amount",
@@ -79,15 +79,27 @@
    "width": 140
   },
   {
+   "fieldname": "policy_source",
+   "fieldtype": "Select",
+   "label": "Policy Source",
+   "options": "Internal\nExternal",
+   "default": "Internal",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Internal: policies sold by our firm (auto-fills from Policy). External: policies sold by others; blank form for manual entry."
+  },
+  {
    "fieldname": "policy",
    "fieldtype": "Link",
    "label": "Policy",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "in_global_search": 1,
    "options": "Insurance Policy",
-   "width": 140
+   "width": 140,
+   "mandatory_depends_on": "eval:doc.policy_source=='Internal'",
+   "description": "Required for Internal. Optional for External."
   },
   {
    "fieldname": "client",
@@ -123,16 +135,6 @@
    "in_standard_filter": 1,
    "options": "Cashless\nReimbursement\nThird Party\nHospitalization\nAccident\nDeath\nDisability\nProperty Damage\nTheft\nTravel Delay\nOther",
    "width": 130
-  },
-  {
-   "fieldname": "policy_source",
-   "fieldtype": "Select",
-   "label": "Policy Source",
-   "options": "Internal\nExternal",
-   "default": "Internal",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "Internal: policies sold by our firm. External: policies sold by others; claims handled by us."
   },
   {
    "fieldname": "incident_date",
@@ -435,7 +437,7 @@
    "group": "Eligibility"
   }
  ],
- "modified": "2026-09-10 14:30:00",
+ "modified": "2026-09-10 14:55:00",
  "modified_by": "Administrator",
  "module": "Insurance Core",
  "name": "Insurance Claim",
