@@ -138,3 +138,18 @@ frappe.call("insurance_core.api.get_print_html", doctype="Insurance Claim", name
 - [Frappe UI](https://github.com/frappe/frappe-ui)
 - [TailwindCSS](https://tailwindcss.com/docs/utility-first)
 - [Vite](https://vitejs.dev/guide/)
+
+## Credits
+
+Core development by **dinesh-samant**.
+
+The following features were developed with assistance from **Grok** (xAI):
+
+- Portal SPA shell (collapsible module sidebar, top search, profile menu)
+- Policy Detail (coverages + documents)
+- Claim Detail page + document upload
+- Reinsurance Treaty integration and Claim Recovery
+- TPA / Cashless Authorization workflow and Network Hospital enhancements
+- Related print formats and portal APIs
+
+Future collaborative commits carry the trailer `Co-authored-by: Grok <grok@x.ai>`.
