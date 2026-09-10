@@ -68,6 +68,12 @@
 - Agent Commission summary
 - Further Insights dashboards planned (see `specs/08_Integration.md`)
 
+### J. AI Claim Triage (Frappe Flow)
+- Deterministic eligibility score + LLM judgment via [Frappe Flow](https://github.com/frappe/flow_client)
+- Desk buttons: **AI Triage**, **AI Triage (advisory only)**, **Setup Flow Agent**
+- Actions: process (Under Review), reject, or pending with suggestion document
+- See [docs/Flow_integration.md](docs/Flow_integration.md) for install, config, and usage
+
 ## Installation
 
 This repository is a Frappe app. Place it under `frappe-bench/apps/insurance_core`, then:
@@ -92,6 +98,8 @@ yarn dev
 ```
 
 SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
+
+For AI claim triage, also install and configure **Flow** — see [docs/Flow_integration.md](docs/Flow_integration.md).
 
 ## Usage
 
@@ -120,6 +128,11 @@ SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 3. On Submit, a **Cashless Authorization** is created and TPA is resolved.
 4. Approve authorization (sets auth code + approved amount), then **Mark Utilized** after treatment.
 
+### AI Claim Triage
+1. Install Flow and configure a model (see [docs/Flow_integration.md](docs/Flow_integration.md)).
+2. On an **Insurance Claim**, use **AI → Setup Flow Agent** once.
+3. Run **AI Triage (advisory only)** to preview, or **AI Triage** to apply process / reject / pending.
+
 ### Print formats
 ```python
 frappe.call("insurance_core.api.get_print_html", doctype="Insurance Policy", name="POL-…")
@@ -138,6 +151,7 @@ frappe.call("insurance_core.api.get_print_html", doctype="Insurance Claim", name
 - [Frappe UI](https://github.com/frappe/frappe-ui)
 - [TailwindCSS](https://tailwindcss.com/docs/utility-first)
 - [Vite](https://vitejs.dev/guide/)
+- [Frappe Flow](https://github.com/frappe/flow_client) — native AI agents, tools, and triggers (used for claim triage; see [docs/Flow_integration.md](docs/Flow_integration.md))
 
 ## Credits
 
@@ -151,5 +165,6 @@ The following features were developed with assistance from **Grok** (xAI):
 - Reinsurance Treaty integration and Claim Recovery
 - TPA / Cashless Authorization workflow and Network Hospital enhancements
 - Related print formats and portal APIs
+- AI claim triage (Flow tools, agent, trigger, desk buttons)
 
 Future collaborative commits carry the trailer `Co-authored-by: Grok <grok@x.ai>`.
