@@ -1,11 +1,79 @@
 frappe.ui.form.on('Insurance Claim', {
 	refresh(frm) {
+		frm.trigger('toggle_policy_reqd');
 		frm.trigger('show_integration_links');
 		frm.trigger('show_eligibility_button');
 		frm.trigger('show_ai_triage_button');
 		frm.trigger('show_cashless_buttons');
 		frm.trigger('show_reinsurance_buttons');
 	},
+
+	policy_source(frm) {
+		frm.trigger('toggle_policy_reqd');
+		if (frm.doc.policy_source === 'External') {
+			frm.trigger('clear_policy_details');
+		} else if (frm.doc.policy_source === 'Internal' && frm.doc.policy) {
+			frm.trigger('fetch_policy_details');
+		}
+	},
+
+	policy(frm) {
+		if (frm.doc.policy_source === 'External') {
+			return;
+		}
+		if (frm.doc.policy) {
+			frm.trigger('fetch_policy_details');
+		} else {
+			frm.trigger('clear_policy_details');
+		}
+	},
+
+	toggle_policy_reqd(frm) {
+		const internal = (frm.doc.policy_source || 'Internal') === 'Internal';
+		frm.toggle_reqd('policy', internal);
+		frm.set_df_property('policy', 'description', internal
+			? __('Select an internal policy; client, scheme, provider and agent will be filled automatically.')
+			: __('Optional for external claims. Enter client and other details manually.')
+		);
+	},
+
+	fetch_policy_details(frm) {
+		if (!frm.doc.policy || frm.doc.policy_source === 'External') {
+			return;
+		}
+		frappe.db.get_value(
+			'Insurance Policy',
+			frm.doc.policy,
+			['client', 'scheme', 'provider', 'agent'],
+			(r) => {
+				if (!r) {
+					return;
+				}
+				if (r.client) {
+					frm.set_value('client', r.client);
+				}
+				if (r.scheme) {
+					frm.set_value('scheme', r.scheme);
+				}
+				if (r.provider) {
+					frm.set_value('provider', r.provider);
+				}
+				if (r.agent) {
+					frm.set_value('agent', r.agent);
+				}
+			}
+		);
+	},
+
+	clear_policy_details(frm) {
+		// Leave form blank for external claims — clear auto-filled policy fields
+		frm.set_value('policy', '');
+		frm.set_value('client', '');
+		frm.set_value('scheme', '');
+		frm.set_value('provider', '');
+		frm.set_value('agent', '');
+	},
+
 	show_eligibility_button(frm) {
 		if (frm.is_new()) {
 			return;
