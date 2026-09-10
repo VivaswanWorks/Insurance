@@ -12,8 +12,14 @@ frappe.ui.form.on('Insurance Claim', {
 		frm.trigger('toggle_policy_reqd');
 		if (frm.doc.policy_source === 'External') {
 			frm.trigger('clear_policy_details');
-		} else if (frm.doc.policy_source === 'Internal' && frm.doc.policy) {
-			frm.trigger('fetch_policy_details');
+		} else {
+			// Switching to Internal — clear external policy number
+			if (frm.doc.external_policy_number) {
+				frm.set_value('external_policy_number', '');
+			}
+			if (frm.doc.policy) {
+				frm.trigger('fetch_policy_details');
+			}
 		}
 	},
 
@@ -31,9 +37,13 @@ frappe.ui.form.on('Insurance Claim', {
 	toggle_policy_reqd(frm) {
 		const internal = (frm.doc.policy_source || 'Internal') === 'Internal';
 		frm.toggle_reqd('policy', internal);
-		frm.set_df_property('policy', 'description', internal
-			? __('Select an internal policy; client, scheme, provider and agent will be filled automatically.')
-			: __('Optional for external claims. Enter client and other details manually.')
+		frm.toggle_reqd('external_policy_number', !internal);
+		frm.set_df_property(
+			'policy',
+			'description',
+			internal
+				? __('Select an internal policy; client, scheme, provider and agent will be filled automatically.')
+				: __('Hidden for External claims. Use External Policy Number instead.')
 		);
 	},
 
