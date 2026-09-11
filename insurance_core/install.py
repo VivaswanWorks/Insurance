@@ -44,9 +44,14 @@ def ensure_module():
 
 
 def seed_eligibility_criteria():
+	"""Seed system eligibility rules. Idempotent: skips existing criteria_code / criteria_name."""
 	if not frappe.db.exists("DocType", "Client Eligibility Criteria"):
 		return
-	path = frappe.get_app_path("insurance_core", "fixtures", "client_eligibility_criteria.json")
+	# Keep seed data outside fixtures/ so Frappe sync_fixtures does not force-import it
+	path = frappe.get_app_path("insurance_core", "data", "client_eligibility_criteria.json")
+	if not os.path.exists(path):
+		# Backward-compatible fallback if site still has old layout
+		path = frappe.get_app_path("insurance_core", "fixtures", "client_eligibility_criteria.json")
 	if not os.path.exists(path):
 		return
 	with open(path) as handle:
@@ -55,8 +60,18 @@ def seed_eligibility_criteria():
 		code = row.get("criteria_code")
 		if not code:
 			continue
+		# Skip if already present under any name (naming-series or criteria_code)
 		if frappe.db.exists("Client Eligibility Criteria", {"criteria_code": code}):
 			continue
+		criteria_name = row.get("criteria_name")
+		if criteria_name and frappe.db.exists(
+			"Client Eligibility Criteria", {"criteria_name": criteria_name}
+		):
+			continue
+		# Prefer stable name = criteria_code for system rows
+		row = dict(row)
+		row.setdefault("name", code)
+		row["doctype"] = "Client Eligibility Criteria"
 		doc = frappe.get_doc(row)
 		doc.insert(ignore_permissions=True)
 
