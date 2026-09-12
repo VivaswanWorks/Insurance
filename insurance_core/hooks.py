@@ -6,7 +6,10 @@ app_email = "hello@vivaswan.in"
 app_license = "mit"
 app_version = "0.0.1"
 
-required_apps = ["frappe"]
+# Frappe Flow powers AI Claim Triage (agents, tools, triggers).
+# Install with: bench get-app flow && bench --site <site> install-app flow
+# Or: bench get-app <this-app> --resolve-deps
+required_apps = ["frappe", "flow"]
 
 add_to_apps_screen = [
 	{
