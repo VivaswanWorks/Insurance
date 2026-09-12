@@ -119,17 +119,10 @@ def ensure_workspace():
 			entry["link_to"] = row["link_to"]
 		links.append(entry)
 
-	# Drop card breaks that ended up with no following links
+	# Drop card breaks that have no following links before the next break
 	filtered = []
 	for i, row in enumerate(links):
 		if row["type"] == "Card Break":
-			has_child = any(
-				r["type"] == "Link"
-				for r in links[i + 1 :]
-				if r["type"] == "Card Break"
-				else True
-			)
-			# simpler: keep break only if next non-break exists before next break
 			next_links = []
 			for r in links[i + 1 :]:
 				if r["type"] == "Card Break":
