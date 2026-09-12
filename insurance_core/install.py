@@ -12,10 +12,50 @@ ROLES = [
 	"Insurance User",
 ]
 
+# DocTypes to surface on the Insurance Core workspace (must exist to be linked).
+WORKSPACE_SHORTCUTS = [
+	("Insurance Policy", "DocType"),
+	("Insurance Claim", "DocType"),
+	("Insurance Client", "DocType"),
+	("Insurance Scheme", "DocType"),
+	("Insurance Agent", "DocType"),
+	("Insurance Settings", "DocType"),
+]
+
+WORKSPACE_LINKS = [
+	# Catalog
+	{"type": "Card Break", "label": "Catalog"},
+	{"type": "Link", "label": "Insurance Provider", "link_type": "DocType", "link_to": "Insurance Provider"},
+	{"type": "Link", "label": "Insurance Scheme", "link_type": "DocType", "link_to": "Insurance Scheme"},
+	{"type": "Link", "label": "Network Hospital", "link_type": "DocType", "link_to": "Network Hospital"},
+	# Policies
+	{"type": "Card Break", "label": "Policies"},
+	{"type": "Link", "label": "Insurance Policy", "link_type": "DocType", "link_to": "Insurance Policy"},
+	{"type": "Link", "label": "Insurance Client", "link_type": "DocType", "link_to": "Insurance Client"},
+	{"type": "Link", "label": "Insurance Agent", "link_type": "DocType", "link_to": "Insurance Agent"},
+	{"type": "Link", "label": "Insurance Quotation", "link_type": "DocType", "link_to": "Insurance Quotation"},
+	{"type": "Link", "label": "Insurance Opportunity", "link_type": "DocType", "link_to": "Insurance Opportunity"},
+	{"type": "Link", "label": "Policy Endorsement", "link_type": "DocType", "link_to": "Policy Endorsement"},
+	# Claims
+	{"type": "Card Break", "label": "Claims"},
+	{"type": "Link", "label": "Insurance Claim", "link_type": "DocType", "link_to": "Insurance Claim"},
+	{"type": "Link", "label": "Cashless Authorization", "link_type": "DocType", "link_to": "Cashless Authorization"},
+	{"type": "Link", "label": "Claim Recovery", "link_type": "DocType", "link_to": "Claim Recovery"},
+	# Operations
+	{"type": "Card Break", "label": "Operations"},
+	{"type": "Link", "label": "Commission Payout", "link_type": "DocType", "link_to": "Commission Payout"},
+	{"type": "Link", "label": "Commission Rule", "link_type": "DocType", "link_to": "Commission Rule"},
+	{"type": "Link", "label": "Insurance Grievance", "link_type": "DocType", "link_to": "Insurance Grievance"},
+	{"type": "Link", "label": "Reinsurance Treaty", "link_type": "DocType", "link_to": "Reinsurance Treaty"},
+	{"type": "Link", "label": "Insurance Settings", "link_type": "DocType", "link_to": "Insurance Settings"},
+]
+
 
 def after_install():
 	ensure_roles()
 	ensure_module()
+	ensure_workspace()
+	ensure_desktop_icon()
 	seed_eligibility_criteria()
 	setup_ai_triage()
 	# Optional interactive demo data (CLI prompt)
@@ -25,6 +65,8 @@ def after_install():
 def after_migrate():
 	ensure_roles()
 	ensure_module()
+	ensure_workspace()
+	ensure_desktop_icon()
 	seed_eligibility_criteria()
 	setup_ai_triage()
 
@@ -43,6 +85,155 @@ def ensure_module():
 			"module_name": "Insurance Core",
 			"app_name": "insurance_core",
 		}).insert(ignore_permissions=True)
+
+
+def _doctype_exists(name: str) -> bool:
+	return bool(frappe.db.exists("DocType", name))
+
+
+def ensure_workspace():
+	"""Create a public Workspace so Insurance Core appears on the Desk.
+
+	Modern Frappe (v14+) shows modules via Workspace, not Module Def alone.
+	Idempotent: only inserts when missing; does not overwrite user customisations.
+	"""
+	if not frappe.db.exists("DocType", "Workspace"):
+		return
+	if frappe.db.exists("Workspace", "Insurance Core"):
+		return
+
+	links = []
+	for row in WORKSPACE_LINKS:
+		if row["type"] == "Link" and not _doctype_exists(row["link_to"]):
+			continue
+		entry = {
+			"type": row["type"],
+			"label": row["label"],
+			"hidden": 0,
+			"onboard": 0,
+			"is_query_report": 0,
+			"link_count": 0,
+		}
+		if row["type"] == "Link":
+			entry["link_type"] = row["link_type"]
+			entry["link_to"] = row["link_to"]
+		links.append(entry)
+
+	# Drop card breaks that ended up with no following links
+	filtered = []
+	for i, row in enumerate(links):
+		if row["type"] == "Card Break":
+			has_child = any(
+				r["type"] == "Link"
+				for r in links[i + 1 :]
+				if r["type"] == "Card Break"
+				else True
+			)
+			# simpler: keep break only if next non-break exists before next break
+			next_links = []
+			for r in links[i + 1 :]:
+				if r["type"] == "Card Break":
+					break
+				next_links.append(r)
+			if not next_links:
+				continue
+		filtered.append(row)
+		else:
+			filtered.append(row)
+	links = filtered
+
+	shortcuts = []
+	for name, link_type in WORKSPACE_SHORTCUTS:
+		if not _doctype_exists(name):
+			continue
+		shortcuts.append({
+			"label": name,
+			"link_to": name,
+			"type": link_type,
+			"doc_view": "List",
+		})
+
+	# Minimal content JSON so the workspace is not empty in the block editor
+	content_blocks = []
+	if shortcuts:
+		content_blocks.append({
+			"id": "ic_hdr_shortcuts",
+			"type": "header",
+			"data": {"text": '<span class="h4"><b>Shortcuts</b></span>', "col": 12},
+		})
+		for i, s in enumerate(shortcuts[:6]):
+			content_blocks.append({
+				"id": f"ic_sc_{i}",
+				"type": "shortcut",
+				"data": {"shortcut_name": s["label"], "col": 3},
+			})
+
+	doc = frappe.get_doc({
+		"doctype": "Workspace",
+		"label": "Insurance Core",
+		"title": "Insurance Core",
+		"module": "Insurance Core",
+		"public": 1,
+		"is_hidden": 0,
+		"icon": "shield",
+		"content": json.dumps(content_blocks),
+		"links": links,
+		"shortcuts": shortcuts,
+	})
+	# Some sites set standard=1 for app-shipped workspaces
+	if "standard" in [df.fieldname for df in frappe.get_meta("Workspace").fields]:
+		doc.standard = 0
+	doc.insert(ignore_permissions=True)
+	frappe.db.commit()  # nosemgrep — make workspace visible before desktop icons
+
+
+def ensure_desktop_icon():
+	"""Seed Desktop Icon(s) so Insurance Core shows on the Desk home grid.
+
+	On Frappe v16+, icons come from the Desktop Icon doctype (seeded from
+	add_to_apps_screen + public Workspaces). On older versions this is a no-op.
+	"""
+	try:
+		from frappe.desk.doctype.desktop_icon.desktop_icon import create_desktop_icons
+
+		create_desktop_icons()
+		frappe.db.commit()  # nosemgrep
+	except ImportError:
+		# Pre-v16: Workspace alone is enough for the module list
+		pass
+	except Exception as e:
+		try:
+			frappe.logger("insurance_core").warning(f"Desktop icon seed skipped: {e}")
+		except Exception:
+			pass
+
+	# Explicit App icon fallback if create_desktop_icons did not create one
+	# (e.g. Desktop Settings not on Desktop Icons page, or race during install).
+	if not frappe.db.exists("DocType", "Desktop Icon"):
+		return
+	app_title = "Insurance Core"
+	if frappe.db.exists("Desktop Icon", app_title):
+		return
+	try:
+		icon = frappe.get_doc({
+			"doctype": "Desktop Icon",
+			"label": app_title,
+			"icon_type": "App",
+			"link_type": "External",
+			"app": "insurance_core",
+			"link": "/app/insurance-core",
+			"logo_url": "/assets/insurance_core/images/insurance.svg",
+			"standard": 1,
+			"hidden": 0,
+			"idx": 0,
+		})
+		icon.insert(ignore_permissions=True)
+		frappe.db.commit()  # nosemgrep
+	except Exception as e:
+		try:
+			frappe.logger("insurance_core").warning(f"Desktop Icon insert skipped: {e}")
+		except Exception:
+			pass
 
 
 def seed_eligibility_criteria():
