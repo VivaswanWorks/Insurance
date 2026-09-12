@@ -68,38 +68,62 @@
 - Agent Commission summary
 - Further Insights dashboards planned (see `specs/08_Integration.md`)
 
-### J. AI Claim Triage (Frappe Flow)
+### J. AI Claim Triage (Frappe Flow) — **required**
 - Deterministic eligibility score + LLM judgment via [Frappe Flow](https://github.com/frappe/flow_client)
+- `flow` is listed in `required_apps` and is auto-installed on the site when already present on the bench
 - Desk buttons: **AI Triage**, **AI Triage (advisory only)**, **Setup Flow Agent**
 - Actions: process (Under Review), reject, or pending with suggestion document
 - See [docs/Flow_integration.md](docs/Flow_integration.md) for install, config, and usage
 
 ## Installation
 
-This repository is a Frappe app. Place it under `frappe-bench/apps/insurance_core`, then:
+This repository is a Frappe app. **Frappe Flow** (`flow`) is a required dependency for AI claim triage.
+
+### Recommended (dependency resolution)
 
 ```bash
-# Install / migrate the app on a site
+cd $PATH_TO_YOUR_BENCH
+
+# Fetches insurance_core and resolves required_apps (including flow)
+bench get-app https://github.com/VivaswanWorks/Insurance.git --resolve-deps
+# Or if the app is already under apps/insurance_core:
+#   bench get-app flow
+
+bench --site <site> install-app flow
 bench --site <site> install-app insurance_core
 # or after pull:
 bench --site <site> migrate
 
 # Build the Vue SPA (from the app root)
-cd frontend
+cd apps/insurance_core/frontend
 yarn
 yarn build
 ```
 
+### Manual order
+
+```bash
+bench get-app flow
+# Official clone URL if the short name is unknown:
+# bench get-app https://github.com/frappe/flow_client.git
+
+bench get-app https://github.com/VivaswanWorks/Insurance.git
+bench --site <site> install-app flow
+bench --site <site> install-app insurance_core
+```
+
+On install/migrate, `insurance_core.install.ensure_flow_app()` will install `flow` on the **site** automatically when the app is already present under `apps/flow`.
+
 Dev server:
 
 ```bash
-cd frontend
+cd apps/insurance_core/frontend
 yarn dev
 ```
 
 SPA route: `/insurance_core`. Built assets: `/assets/insurance_core/frontend/`.
 
-For AI claim triage, also install and configure **Flow** — see [docs/Flow_integration.md](docs/Flow_integration.md).
+Configure a Flow Provider + Model after install — see [docs/Flow_integration.md](docs/Flow_integration.md).
 
 ## Usage
 
@@ -129,7 +153,7 @@ For AI claim triage, also install and configure **Flow** — see [docs/Flow_inte
 4. Approve authorization (sets auth code + approved amount), then **Mark Utilized** after treatment.
 
 ### AI Claim Triage
-1. Install Flow and configure a model (see [docs/Flow_integration.md](docs/Flow_integration.md)).
+1. Ensure Flow is installed (required) and configure a model (see [docs/Flow_integration.md](docs/Flow_integration.md)).
 2. On an **Insurance Claim**, use **AI → Setup Flow Agent** once.
 3. Run **AI Triage (advisory only)** to preview, or **AI Triage** to apply process / reject / pending.
 
@@ -151,7 +175,7 @@ frappe.call("insurance_core.api.get_print_html", doctype="Insurance Claim", name
 - [Frappe UI](https://github.com/frappe/frappe-ui)
 - [TailwindCSS](https://tailwindcss.com/docs/utility-first)
 - [Vite](https://vitejs.dev/guide/)
-- [Frappe Flow](https://github.com/frappe/flow_client) — native AI agents, tools, and triggers (used for claim triage; see [docs/Flow_integration.md](docs/Flow_integration.md))
+- [Frappe Flow](https://github.com/frappe/flow_client) — native AI agents, tools, and triggers (required for claim triage; see [docs/Flow_integration.md](docs/Flow_integration.md))
 
 ## Credits
 
@@ -166,5 +190,6 @@ The following features were developed with assistance from **Grok** (xAI):
 - TPA / Cashless Authorization workflow and Network Hospital enhancements
 - Related print formats and portal APIs
 - AI claim triage (Flow tools, agent, trigger, desk buttons)
+- Flow as required dependency + auto-install on site
 
 Future collaborative commits carry the trailer `Co-authored-by: Grok <grok@x.ai>`.
