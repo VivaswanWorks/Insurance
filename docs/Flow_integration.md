@@ -2,6 +2,8 @@
 
 This guide covers installing [Frappe Flow](https://github.com/frappe/flow_client), configuring a model/provider, wiring the **Claim Triage Agent**, and using AI triage on **Insurance Claim**.
 
+**Flow is a required dependency** of Insurance Core (`required_apps = ["frappe", "flow"]`). Install it before or with this app.
+
 Insurance Core combines:
 
 1. **Deterministic eligibility** (`insurance_core.eligibility`) — Claim Success Score, mandatory gates, evaluation log.
@@ -11,15 +13,24 @@ Insurance Core combines:
 
 ## Prerequisites
 
-- Frappe bench with `insurance_core` installed and migrated.
+- Frappe bench with `insurance_core` and **`flow`** installed and migrated.
 - Network access to an LLM provider (Anthropic, OpenAI, or a local endpoint such as Ollama / LM Studio).
 - Roles: **System Manager** or **Insurance Manager** for setup; Claims Adjuster / Insurance User can run triage.
 
 ---
 
-## 1. Install Flow
+## 1. Install Flow (required)
 
-From your bench:
+### Option A — Resolve deps when getting Insurance Core
+
+```bash
+cd $PATH_TO_YOUR_BENCH
+bench get-app https://github.com/VivaswanWorks/Insurance.git --resolve-deps
+bench --site <site-name> install-app flow
+bench --site <site-name> install-app insurance_core
+```
+
+### Option B — Explicit get-app
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
@@ -30,6 +41,14 @@ bench --site <site-name> install-app flow
 bench --site <site-name> migrate
 bench restart
 ```
+
+### Auto-install on the site
+
+On `install-app insurance_core` / `migrate`, `insurance_core.install.ensure_flow_app()`:
+
+- Detects whether **flow** is already installed on the site.
+- If the app exists under `apps/flow` but is **not** on the site, installs it on the current site automatically.
+- If Flow is missing from the bench entirely, logs a clear message (run `bench get-app flow` once).
 
 Confirm DocTypes exist: **Flow Provider**, **Flow Model**, **Flow Tool**, **Flow Agent**, **Flow Trigger**, **Flow Run**.
 
@@ -69,12 +88,14 @@ This calls `insurance_core.ai_triage.setup_claim_ai_triage` and is idempotent.
 
 ### Option B — Migrate / console
 
-On migrate, `insurance_core.install.after_migrate` calls `setup_ai_triage()` when Flow is present.
+On migrate, `insurance_core.install.after_migrate` calls `ensure_flow_app()` then `setup_ai_triage()` when Flow is present.
 
 Or in `bench console`:
 
 ```python
+from insurance_core.install import ensure_flow_app
 from insurance_core.ai_triage import ensure_flow_triage_setup
+print(ensure_flow_app())
 print(ensure_flow_triage_setup())
 ```
 
@@ -154,6 +175,10 @@ frappe.call(
 # Setup only
 frappe.call("insurance_core.ai_triage.setup_claim_ai_triage")
 
+# Ensure Flow on site (if app is already on the bench)
+from insurance_core.install import ensure_flow_app
+ensure_flow_app()
+
 # Tools (also callable by the Flow agent)
 from insurance_core.ai_triage import (
     get_claim_eligibility,
@@ -204,13 +229,14 @@ Useful sources: policy wordings, exclusion lists, claims SOP PDFs, historical Cl
 
 | Symptom | What to check |
 |---------|----------------|
-| “Frappe Flow is not installed” | `bench list-apps`; install `flow` and migrate |
+| “Frappe Flow is not installed” / required_apps error | `bench list-apps`; `bench get-app flow` then `install-app flow` |
 | “No Flow Model configured” | Create/enable Flow Provider + Flow Model |
 | Setup returns tools but no agent | Model missing; re-run Setup after adding a model |
 | Agent runs but no status change | Use **AI Triage** (not advisory); claim status may be outside the allowed set |
 | Mandatory failures still “process” | Code forces reject when `failed_mandatory` is non-empty |
 | Trigger never fires | Trigger still disabled; condition or server-script sandbox for conditions |
 | Import path errors on tools | Ensure `insurance_core.ai_triage` is on the site and migrated |
+| Auto-install did nothing | Flow must already exist under `apps/flow`; run `bench get-app flow` once |
 
 Fallback: if the Flow agent cannot run, triage still applies a **deterministic** decision from the eligibility score so the Desk button remains usable offline.
 
@@ -229,9 +255,10 @@ Fallback: if the Flow agent cannot run, triage still applies a **deterministic**
 
 | Path | Role |
 |------|------|
+| `insurance_core/hooks.py` | `required_apps = ["frappe", "flow"]` |
+| `insurance_core/install.py` | `ensure_flow_app()`, `setup_ai_triage()` on install/migrate |
 | `insurance_core/ai_triage.py` | Tools, `run_claim_ai_triage`, `ensure_flow_triage_setup` |
 | `insurance_core/eligibility.py` | Deterministic Claim Success Score |
-| `insurance_core/install.py` | `setup_ai_triage()` on install/migrate |
 | Claim form JS | **AI** button group |
 
 Upstream Flow documentation: [github.com/frappe/flow_client](https://github.com/frappe/flow_client).
