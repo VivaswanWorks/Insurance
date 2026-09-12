@@ -1,5 +1,7 @@
 import json
 import os
+import subprocess
+from pathlib import Path
 
 import frappe
 
@@ -50,8 +52,12 @@ WORKSPACE_LINKS = [
 	{"type": "Link", "label": "Insurance Settings", "link_type": "DocType", "link_to": "Insurance Settings"},
 ]
 
+FLOW_APP = "flow"
+FLOW_GIT = "https://github.com/frappe/flow_client.git"
+
 
 def after_install():
+	ensure_flow_app()
 	ensure_roles()
 	ensure_module()
 	ensure_workspace()
@@ -63,12 +69,144 @@ def after_install():
 
 
 def after_migrate():
+	ensure_flow_app()
 	ensure_roles()
 	ensure_module()
 	ensure_workspace()
 	ensure_desktop_icon()
 	seed_eligibility_criteria()
 	setup_ai_triage()
+
+
+def ensure_flow_app(fetch_if_missing: bool = False) -> dict:
+	"""Ensure Frappe Flow is installed on the current site.
+
+	Flow is listed in ``required_apps``. Preferred path:
+
+	1. ``bench get-app flow`` (or ``bench get-app <insurance_core> --resolve-deps``)
+	2. ``bench --site <site> install-app flow``
+	3. ``bench --site <site> install-app insurance_core``
+
+	This helper runs at install/migrate time:
+
+	- If ``flow`` is already installed on the site → no-op.
+	- If ``flow`` exists under ``apps/`` but is not on the site → install it on the site.
+	- If ``fetch_if_missing`` and the app is absent from the bench → try
+	  ``bench get-app`` then install (best-effort; needs network + bench CLI).
+
+	Returns a small status dict for logging / desk callers.
+	"""
+	status = {"app": FLOW_APP, "installed": False, "action": None, "error": None}
+
+	try:
+		installed = set(frappe.get_installed_apps() or [])
+	except Exception:
+		installed = set()
+
+	if FLOW_APP in installed:
+		status["installed"] = True
+		status["action"] = "already_installed"
+		return status
+
+	# App present on bench?
+	bench_has_app = False
+	try:
+		from frappe.utils import get_bench_path
+
+		bench_path = Path(get_bench_path())
+		bench_has_app = (bench_path / "apps" / FLOW_APP).is_dir()
+	except Exception:
+		try:
+			import frappe as _f
+
+			bench_has_app = FLOW_APP in (_f.get_all_apps() or [])
+		except Exception:
+			bench_has_app = False
+
+	if not bench_has_app and fetch_if_missing:
+		fetch_result = _bench_get_app_flow()
+		status["action"] = "get_app"
+		if not fetch_result.get("ok"):
+			status["error"] = fetch_result.get("error") or "bench get-app flow failed"
+			_log_flow_warning(status["error"])
+			return status
+		bench_has_app = True
+
+	if not bench_has_app:
+		status["action"] = "missing_on_bench"
+		status["error"] = (
+			"Frappe Flow is not on this bench. Run: "
+			"bench get-app flow && bench --site <site> install-app flow"
+		)
+		_log_flow_warning(status["error"])
+		return status
+
+	# Install on current site
+	try:
+		from frappe.installer import install_app
+
+		install_app(FLOW_APP, verbose=False, set_as_patched=True)
+		frappe.db.commit()  # nosemgrep
+		status["installed"] = True
+		status["action"] = "installed_on_site"
+		try:
+			frappe.logger("insurance_core").info("Installed app 'flow' on site")
+		except Exception:
+			pass
+	except Exception as e:
+		status["action"] = "install_failed"
+		status["error"] = str(e)
+		_log_flow_warning(f"Could not install flow on site: {e}")
+
+	return status
+
+
+def _bench_get_app_flow() -> dict:
+	"""Best-effort ``bench get-app flow`` when the app is missing from the bench."""
+	try:
+		from frappe.utils import get_bench_path
+
+		bench_path = str(get_bench_path())
+	except Exception as e:
+		return {"ok": False, "error": f"Cannot resolve bench path: {e}"}
+
+	cmd = ["bench", "get-app", FLOW_GIT, "--branch", "develop"]
+	# Prefer short name when bench knows it
+	try:
+		cmd_short = ["bench", "get-app", FLOW_APP]
+		proc = subprocess.run(
+			cmd_short,
+			cwd=bench_path,
+			capture_output=True,
+			text=True,
+			timeout=600,
+		)
+		if proc.returncode == 0:
+			return {"ok": True, "via": "short_name"}
+	except Exception:
+		pass
+
+	try:
+		proc = subprocess.run(
+			cmd,
+			cwd=bench_path,
+			capture_output=True,
+			text=True,
+			timeout=600,
+		)
+		if proc.returncode == 0:
+			return {"ok": True, "via": "git_url"}
+		err = (proc.stderr or proc.stdout or "").strip()[-500:]
+		return {"ok": False, "error": err or f"exit {proc.returncode}"}
+	except Exception as e:
+		return {"ok": False, "error": str(e)}
+
+
+def _log_flow_warning(msg: str) -> None:
+	try:
+		frappe.logger("insurance_core").warning(msg)
+	except Exception:
+		pass
 
 
 def ensure_roles():
